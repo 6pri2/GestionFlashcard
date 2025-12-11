@@ -1,9 +1,13 @@
 import express from 'express'
-import usersRouter from './routers/authRouter'
+import authRouter from './routers/authRouter.js'
+import logger from "./middleware/logger.js"
 
 const app = express()
 
 const PORT = process.env.PORT || 3000;
+
+app.use(express.json())
+app.use(logger)
 
 app.use('/auth', authRouter)
 

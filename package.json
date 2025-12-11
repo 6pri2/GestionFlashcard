@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/server.js",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:seed": "node src/db/seed.js"
@@ -19,7 +19,9 @@
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
-    "nodemon": "^3.1.11"
+    "jsonwebtoken": "^9.0.3",
+    "nodemon": "^3.1.11",
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "drizzle-kit": "^0.31.8"
