@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
+import { sqliteTable, text, integer, primaryKey } from 'drizzle-orm/sqlite-core'
 import { randomUUID } from 'crypto'
 
 export const users = sqliteTable('users', {
@@ -41,3 +41,15 @@ export const flashcards = sqliteTable('flashcards', {
 		.notNull()
 		.$defaultFn(() => new Date()),
 });
+
+export const progression = sqliteTable('progression', {
+    flashcard_id: text('flashcard_id').notNull().references(() => flashcards.id, { onDelete: 'cascade' }),
+    user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    progress_level: integer('progress_level').notNull(),
+    last_review: integer('last_review', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    next_review_date: integer('next_review_date', { mode: 'timestamp' }).default(null),
+  },
+  (table) => ({
+    pk: primaryKey(table.flashcard_id, table.user_id),
+  })
+);
