@@ -32,7 +32,7 @@ async function seed() {
 		const result = await db.insert(users).values(seedUsers).returning()
 
 		console.log('Database seeded successfully!')
-		console.log('email : ' . result)
+		console.log('email : ', result[0].email)
 		console.log('password : motdepasse')
 	} catch (error) {
 		console.error('Error seeding database:', error)
