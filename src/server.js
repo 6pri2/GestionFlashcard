@@ -1,5 +1,6 @@
 import express from 'express'
-import usersRouter from './routers/authRouter'
+import authRouter from './routers/authRouter.js'
+import logger from "./middleware/logger.js"
 
 const app = express()
 

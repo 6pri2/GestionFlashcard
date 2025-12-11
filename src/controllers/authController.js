@@ -1,6 +1,6 @@
 import { request, response } from "express"
 import bcrypt from 'bcrypt'
-import {db} from '../db/database.js'
+import {db} from '../db/db.js'
 import { users } from "../db/schema.js"
 import jwt from "jsonwebtoken"
 import { eq } from "drizzle-orm"
@@ -60,7 +60,7 @@ export const login = async (req, res) => {
             return res.status(401).json({error : "Invalid email or password !"})
         }
 
-        const token = jwt.sign({ userId : newUser.id, email : newUser.email, firstname : newUser.firstname, lastname : newUser.lastname , admin : newUser.admin}, process.env.JWT_SECRET, {expiresIn : '24h'} )
+        const token = jwt.sign({ userId : user.id, email : user.email, firstname : user.firstname, lastname : user.lastname , admin : user.admin}, process.env.JWT_SECRET, {expiresIn : '24h'} )
 
         res.status(200).json({
             message: "User logged in",
@@ -79,3 +79,31 @@ export const login = async (req, res) => {
         })
     }
 }
+
+export const information = async (req, res) => {
+    try {
+        const userId = req.user.userId; 
+
+        const [user] = await db
+            .select()
+            .from(users)
+            .where(eq(users.id, userId));
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        res.status(200).json({
+            message: "User information :",
+            userData: {
+                id: user.id,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                email: user.email
+            },
+        })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to fetch user" });
+    }
+};
