@@ -27,3 +27,17 @@ export const collections = sqliteTable('collections', {
 		.notNull()
 		.$defaultFn(() => new Date()),
 });
+
+export const flashcards = sqliteTable('flashcards', {
+	id: text('id', { length: 36 })
+		.primaryKey()
+		.$defaultFn(() => randomUUID()),
+	front_text: text('front_text', { length: 512 }).notNull(),
+	back_text: text('back_text', { length: 512 }).notNull(),
+	url_front: text('url_front').default(null),
+	url_back: text('url_back').default(null),
+    collection_id : text("collection_id").references(()=> collections.id, { onDelete : 'cascade'}).notNull(),
+    createdAt: integer('created_at', { mode: 'timestamp' })
+		.notNull()
+		.$defaultFn(() => new Date()),
+});
