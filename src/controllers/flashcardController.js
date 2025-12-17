@@ -27,3 +27,31 @@ export const getFlashcardById = async (req, res) => {
         })
     }
 }
+
+/**
+ * 
+ * @param {request} req 
+ * @param {response} res 
+ */
+export const createFlashcard = async (req, res) => {
+    const { front_text, back_text, url_front, url_back, collection_id } = req.body;
+
+    const [collection] = await db.select().from(collections).where(eq(collections.id,collection_id))
+        if(collection.user_id!=req.user.userId){
+            return res.status(403).json({message : 'It is not your flashcard and this collection is private !'})
+        }
+
+    try{
+        const [newFlashcard] = await db.insert(flashcards).values({
+            front_text,
+            back_text,
+            url_front,
+            url_back,
+            collection_id,
+        }).returning();
+        res.status(201).json({message : 'Flashcard created', data : newFlashcard});
+    }catch(error){
+        console.error(error);
+        res.status(500).json({error : "Failed to create flashcard"});
+    }
+};
