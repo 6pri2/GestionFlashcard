@@ -28,7 +28,7 @@ export const createCollection = async (req, res) => {
 
         console.error(error)
         res.status(500).json({
-            error : 'Register failed',
+            error : 'Question Creation failed',
         })
 
     }
@@ -59,7 +59,7 @@ export const collectionById = async (req, res) => {
     }catch(error){
         console.error(error)
         res.status(500).json({
-            error : 'Register failed',
+            error : 'Failed to query collection by id',
         })
     }
 }
@@ -77,7 +77,11 @@ export const collectionByTitle = async (req, res) => {
 
 export const myCollection = async (req, res) => {
     try{
-        
+        const collection = await db.select().from(collections).where(eq(collections.user_id,req.user.userId))
+        if(!collection){
+            return res.status(404).json({message : 'You don\'t have collections !'})
+        }
+        res.status(200).json(collection)
     }catch(error){
         console.error(error)
         res.status(500).json({
