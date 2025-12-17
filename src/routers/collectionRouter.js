@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {createCollection, updateCollection, collectionById, collectionByTitle, myCollection, deleteCollection} from '../controllers/collectionController.js'
-import {validateBody} from '../middleware/validation.js'
-import { collectionSchema } from "../controllers/models/collection.js";
+import {validateBody, validateParams} from '../middleware/validation.js'
+import { collectionSchema, getByIdSchema } from "../controllers/models/collection.js";
 import { authenticateToken } from "../middleware/authenticateToken.js";
 
 const router = Router()
@@ -12,7 +12,7 @@ router.post('/createCollection',validateBody(collectionSchema) ,createCollection
 
 router.post('/updateCollection',validateBody(collectionSchema) ,updateCollection)
 
-router.get("/collectionById", collectionById)
+router.get("/collectionById/:id",validateParams(getByIdSchema) , collectionById)
 
 router.get("/collectionByTitle", collectionByTitle)
 

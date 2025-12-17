@@ -47,7 +47,15 @@ export const updateCollection = async (req, res) => {
 
 export const collectionById = async (req, res) => {
     try{
-        
+        const {id} = req.params
+        const [collection] = await db.select().from(collections).where(eq(collections.id,id))
+        if(!collection){
+            return res.status(404).json({message : 'Collection not found !'})
+        }
+        if(collection.is_private==true && collection.user_id!=req.user.userId && req.user.userAdmin==false){
+            return res.status(403).json({message : 'It is not your collection and this collection is private !'})
+        }
+        res.status(200).json(collection)
     }catch(error){
         console.error(error)
         res.status(500).json({

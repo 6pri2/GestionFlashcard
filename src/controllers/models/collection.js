@@ -6,7 +6,6 @@ export const collectionSchema = z.object({
     is_private : z.boolean().optional() ,
 })
 
-export const loginSchema = z.object({
-    email : z.email(),  
-    password : z.string().min(6).max(255)
+export const getByIdSchema = z.object({
+    id : z.uuid()
 })
