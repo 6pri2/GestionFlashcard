@@ -55,3 +55,26 @@ export const createFlashcard = async (req, res) => {
         res.status(500).json({error : "Failed to create flashcard"});
     }
 };
+
+export const deleteFlashcard = async (req, res)=>{
+    try{
+        const {id} = req.params
+        const [flashcard] = await db.select().from(flashcards).where(eq(flashcards.id,id))
+        if(!flashcard){
+            return res.status(404).json({message : 'Flashcard not found !'})
+        }
+        const [collection] = await db.select().from(collections).where(eq(collections.id,flashcard.collection_id))
+        if(collection.private==true && collection.user_id!=req.user.userId && req.user.userAdmin==false){
+            return res.status(403).json({message : 'It is not your flashcard !'})
+        }
+       
+        const [deleteFlashcard] = await db.delete(flashcards).where(eq(flashcards.id,id)).returning();
+        if(!deleteFlashcard) {
+            return res.status(404).json({message : 'Flashcard not found'})
+        }
+        res.status(200).json({message : 'Flashcard deleted !'})
+    }catch(error){
+        console.error(error);
+        res.status(500).json({error : 'Failed to delete flashcard'});
+    }
+}
