@@ -22,7 +22,7 @@ export const collections = sqliteTable('collections', {
 	title: text('title', { length: 100 }).notNull(),
 	description: text('description', { length: 512 }).notNull(),
     user_id : text("user_id").references(()=> users.id, { onDelete : 'cascade'}).notNull(),
-	private: integer('private', { mode: 'boolean' }).notNull().default(false),
+	is_private: integer('private', { mode: 'boolean' }).notNull().default(false),
     createdAt: integer('created_at', { mode: 'timestamp' })
 		.notNull()
 		.$defaultFn(() => new Date()),
