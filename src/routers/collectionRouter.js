@@ -8,17 +8,17 @@ const router = Router()
 
 router.use(authenticateToken)
 
-router.post('/createCollection',validateBody(collectionSchema) ,createCollection)
+router.post('/createCollection', validateBody(collectionSchema), createCollection)
 
-router.post('/updateCollection',validateBody(collectionSchema) ,updateCollection)
+router.post('/updateCollection', validateBody(collectionSchema), updateCollection)
 
-router.get("/collectionById/:id",validateParams(getByIdSchema) , collectionById)
+router.get("/collectionById/:id", validateParams(getByIdSchema), collectionById)
 
-router.get("/collectionByTitle", collectionByTitle)
+router.get("/collectionByTitle/:title", collectionByTitle)
 
 router.get("/myCollection", myCollection)
 
-router.delete("/deleteCollection", deleteCollection)
+router.delete("/deleteCollection/:id", validateParams(getByIdSchema), deleteCollection)
 
 export default router
 
