@@ -64,17 +64,47 @@ export const deleteFlashcard = async (req, res)=>{
             return res.status(404).json({message : 'Flashcard not found !'})
         }
         const [collection] = await db.select().from(collections).where(eq(collections.id,flashcard.collection_id))
-        if(collection.private==true && collection.user_id!=req.user.userId && req.user.userAdmin==false){
+        if(collection.user_id!=req.user.userId && req.user.userAdmin==false){
             return res.status(403).json({message : 'It is not your flashcard !'})
         }
        
-        const [deleteFlashcard] = await db.delete(flashcards).where(eq(flashcards.id,id)).returning();
-        if(!deleteFlashcard) {
-            return res.status(404).json({message : 'Flashcard not found'})
-        }
+        await db.delete(flashcards).where(eq(flashcards.id,id));
         res.status(200).json({message : 'Flashcard deleted !'})
     }catch(error){
         console.error(error);
         res.status(500).json({error : 'Failed to delete flashcard'});
+    }
+}
+
+/**
+ * 
+ * @param {request} req 
+ * @param {response} res 
+ */
+export const updateFlashcard = async (req, res)=>{
+    try{
+        const {id} = req.params
+        const { front_text, back_text, url_front, url_back } = req.body;
+
+        const [flashcard] = await db.select().from(flashcards).where(eq(flashcards.id,id))
+        if(!flashcard){
+            return res.status(404).json({message : 'Flashcard not found !'})
+        }
+        const [collection] = await db.select().from(collections).where(eq(collections.id,flashcard.collection_id))
+        if(collection.user_id!=req.user.userId){
+            return res.status(403).json({message : 'It is not your flashcard !'})
+        }
+
+        await db.update(flashcards).set({
+            front_text,
+            back_text,
+            url_front,
+            url_back
+        }).where(eq(flashcards.id,id))
+        
+        res.status(200).json({message : 'Flashcard updated !'})
+    }catch(error){
+        console.error(error);
+        res.status(500).json({error : 'Failed to update flashcard'});
     }
 }
