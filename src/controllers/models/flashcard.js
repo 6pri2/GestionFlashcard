@@ -18,3 +18,11 @@ export const updateFlashcardSchema = z.object({
     url_front : z.url().optional(),
     url_back : z.url().optional()
 })
+
+export const progressSchema = z.object({
+  progress_level: z
+    .number()
+    .int("progress_level must be an integer")
+    .min(1, "progress_level must be at least 1")
+    .max(5, "progress_level must be at most 5")
+});
