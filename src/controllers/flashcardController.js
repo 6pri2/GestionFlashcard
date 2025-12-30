@@ -119,6 +119,7 @@ export const reviseFlashcard = async (req, res)=>{
         const {id} = req.params
         const { progress_level } = req.body;
 
+
         const [flashcard] = await db.select().from(flashcards).where(eq(flashcards.id,id))
         if(!flashcard){
             return res.status(404).json({message : 'Flashcard not found !'})
@@ -155,9 +156,11 @@ export const reviseFlashcard = async (req, res)=>{
         }).where(
             and(
                 eq(progression.flashcard_id,id),
-                eq(progression.user_id, req.user.UserId)
+                eq(progression.user_id, req.user.userId)
             )
         ).returning();
+
+
 
         if (updateProgression){
             return res.status(200).json({message : 'Progression updated', data : updateProgression})
@@ -168,7 +171,7 @@ export const reviseFlashcard = async (req, res)=>{
             progress_level,
             last_review,
             next_review_date,
-            user_id : req.user.UserId,
+            user_id : req.user.userId,
         }).returning();
         res.status(201).json({message : 'Progression created',data : newProgression})
         
