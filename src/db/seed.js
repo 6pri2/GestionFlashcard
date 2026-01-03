@@ -12,6 +12,7 @@ export async function seed() {
 
 		const hashedPassword1 = await bcrypt.hash('motdepasse', 12)
 		const hashedPassword2 = await bcrypt.hash('12345678', 12)
+    	const hashedPassword3 = await bcrypt.hash('password3', 12)
 
 		const seedUsers = [
 			{
@@ -26,6 +27,12 @@ export async function seed() {
 				lastname : 'Duroy',
 				password : hashedPassword2,
 				admin : true
+			},
+			{ 
+				email: 'test3@test.com', 
+				firstname: 'Louis', 
+				lastname: 'Martin', 
+				password: hashedPassword3 
 			}
 		]
 
