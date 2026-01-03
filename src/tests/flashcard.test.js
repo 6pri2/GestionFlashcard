@@ -213,6 +213,126 @@ describe('Flashcard routes - complete coverage', () => {
         });
     });
 
+    describe('PATCH /flashcard → update flashcard', () => {
+
+        // ================= AUTH =================
+
+        it('PATCH /flashcard/:id → no token → 401', async () => {
+            const res = await request(app)
+            .patch(`/flashcard/${publicFlashcardId}`)
+            .send({ front_text: 'Updated' });
+
+            expect(res.statusCode).toBe(401);
+            expect(res.body.error).toBe('Access token required !');
+        });
+
+        it('PATCH /flashcard/:id → invalid token → 401', async () => {
+            const res = await request(app)
+            .patch(`/flashcard/${publicFlashcardId}`)
+            .set('Authorization', 'Bearer invalidtoken')
+            .send({ front_text: 'Updated' });
+
+            expect(res.statusCode).toBe(401);
+            expect(res.body.error).toBe('Invalid token !');
+        });
+
+        // ================= PARAMS =================
+
+        it('PATCH /flashcard/:id → invalid UUID → 400', async () => {
+            const res = await request(app)
+            .patch('/flashcard/not-a-uuid')
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({ front_text: 'Updated' });
+
+            expect(res.statusCode).toBe(400);
+            expect(res.body.error).toBe('Invalid params');
+        });
+
+        it('PATCH /flashcard/:id → flashcard not found → 404', async () => {
+            const res = await request(app)
+            .patch('/flashcard/00000000-0000-0000-0000-000000000000')
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({ front_text: 'Updated' });
+
+            expect(res.statusCode).toBe(404);
+            expect(res.body.message).toBe('Flashcard not found !');
+        });
+
+        // ================= BODY =================
+
+        it('PATCH /flashcard/:id → invalid body → 400', async () => {
+            const res = await request(app)
+            .patch(`/flashcard/${publicFlashcardId}`)
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({ front_text: '' });
+
+            expect(res.statusCode).toBe(400);
+            expect(res.body.error).toBe('Invalid body');
+            expect(res.body.details.length).toBeGreaterThan(0);
+        });
+
+        it('PATCH /flashcard/:id → empty body → 400', async () => {
+            const res = await request(app)
+            .patch(`/flashcard/${publicFlashcardId}`)
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({});
+
+            expect(res.statusCode).toBe(400);
+            expect(res.body.error).toBe('Invalid body');
+            expect(res.body.details[0].message).toBe('At least one field must be provided');
+        });
+
+        // ================= RIGHTS =================
+
+        it('PATCH /flashcard/:id → non-owner → 403', async () => {
+            const res = await request(app)
+            .patch(`/flashcard/${privateFlashcardId}`)
+            .set('Authorization', `Bearer ${otherToken}`)
+            .send({ front_text: 'Hack' });
+
+            expect(res.statusCode).toBe(403);
+            expect(res.body.message).toBe('It is not your flashcard !');
+        });
+
+        it('PATCH /flashcard/:id → admin → 403 (by design)', async () => {
+            const res = await request(app)
+            .patch(`/flashcard/${privateFlashcardId}`)
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({ front_text: 'Admin edit' });
+
+            expect(res.statusCode).toBe(403);
+            expect(res.body.message).toBe('It is not your flashcard !');
+        });
+
+        // ================= SUCCESS =================
+
+        it('PATCH /flashcard/:id → success (partial update) → 200', async () => {
+            const res = await request(app)
+            .patch(`/flashcard/${publicFlashcardId}`)
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({ front_text: 'Paris modifié' });
+
+            expect(res.statusCode).toBe(200);
+            expect(res.body.message).toBe('Flashcard updated !');
+        });
+
+        it('PATCH /flashcard/:id → success (full update) → 200', async () => {
+            const res = await request(app)
+            .patch(`/flashcard/${publicFlashcardId}`)
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({
+                front_text: 'Paris',
+                back_text: 'France 🇫🇷',
+                url_front: 'https://example.com/front.jpg',
+                url_back: 'https://example.com/back.jpg',
+            });
+
+            expect(res.statusCode).toBe(200);
+            expect(res.body.message).toBe('Flashcard updated !');
+        });
+    });
+
+
     describe('DELETE /flashcard/:id → delete flashcard', () => {
 
         // ================= AUTH =================

@@ -17,7 +17,10 @@ export const updateFlashcardSchema = z.object({
     back_text : z.string().min(1).max(512,"Back_text must be at most 512 characters").optional(),
     url_front : z.url().optional(),
     url_back : z.url().optional()
-})
+}).refine((data) => Object.keys(data).length > 0, {
+    message: "At least one field must be provided",
+});
+
 
 export const progressSchema = z.object({
   progress_level: z
