@@ -37,6 +37,11 @@ export const createFlashcard = async (req, res) => {
     const { front_text, back_text, url_front, url_back, collection_id } = req.body;
 
     const [collection] = await db.select().from(collections).where(eq(collections.id,collection_id))
+
+        if (!collection) {
+            return res.status(404).json({ message: 'Collection not found' });
+        }
+
         if(collection.user_id!=req.user.userId){
             return res.status(403).json({message : 'It is not your flashcard and this collection is private !'})
         }
