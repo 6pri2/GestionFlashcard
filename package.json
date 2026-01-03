@@ -8,7 +8,7 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:seed": "node src/db/seed.js",
-    "test": "npm run db:seed && NODE_ENV=test jest"
+    "test": "NODE_ENV=test jest"
   },
   "keywords": [],
   "author": "",
