@@ -61,6 +61,12 @@ export const createFlashcard = async (req, res) => {
     }
 };
 
+/**
+ * 
+ * @param {request} req 
+ * @param {response} res 
+ */
+
 export const deleteFlashcard = async (req, res)=>{
     try{
         const {id} = req.params

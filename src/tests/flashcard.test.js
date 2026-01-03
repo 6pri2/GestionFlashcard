@@ -213,6 +213,86 @@ describe('Flashcard routes - complete coverage', () => {
         });
     });
 
+    describe('DELETE /flashcard/:id → delete flashcard', () => {
+
+        // ================= AUTH =================
+
+        it('DELETE /flashcard/:id → no token → 401', async () => {
+            const res = await request(app).delete(`/flashcard/${publicFlashcardId}`);
+            expect(res.statusCode).toBe(401);
+            expect(res.body.error).toBe('Access token required !');
+        });
+
+        it('DELETE /flashcard/:id → invalid token → 401', async () => {
+            const res = await request(app)
+            .delete(`/flashcard/${publicFlashcardId}`)
+            .set('Authorization', 'Bearer invalidtoken');
+
+            expect(res.statusCode).toBe(401);
+            expect(res.body.error).toBe('Invalid token !');
+        });
+
+        // ================= PARAMS =================
+
+        it('DELETE /flashcard/:id → invalid UUID → 400', async () => {
+            const res = await request(app)
+            .delete('/flashcard/not-a-uuid')
+            .set('Authorization', `Bearer ${userToken}`);
+
+            expect(res.statusCode).toBe(400);
+            expect(res.body.error).toBe('Invalid params');
+            expect(res.body.details.length).toBeGreaterThan(0);
+        });
+
+        // ================= METIER =================
+
+        it('DELETE /flashcard/:id → flashcard not found → 404', async () => {
+            const res = await request(app)
+            .delete('/flashcard/00000000-0000-0000-0000-000000000000')
+            .set('Authorization', `Bearer ${userToken}`);
+
+            expect(res.statusCode).toBe(404);
+            expect(res.body.message).toBe('Flashcard not found !');
+        });
+
+        it('DELETE /flashcard/:id → forbidden for non-owner non-admin → 403', async () => {
+            const res = await request(app)
+            .delete(`/flashcard/${publicFlashcardId}`)
+            .set('Authorization', `Bearer ${otherToken}`);
+
+            expect(res.statusCode).toBe(403);
+            expect(res.body.message).toBe('It is not your flashcard !');
+        });
+
+        // ================= SUCCESS =================
+
+        it('DELETE /flashcard/:id → success by owner → 200', async () => {
+            const res = await request(app)
+            .delete(`/flashcard/${publicFlashcardId}`)
+            .set('Authorization', `Bearer ${userToken}`);
+
+            expect(res.statusCode).toBe(200);
+            expect(res.body.message).toBe('Flashcard deleted !');
+
+            const [deleted] = await db
+            .select()
+            .from(flashcards)
+            .where(eq(flashcards.id, publicFlashcardId));
+
+            expect(deleted).toBeUndefined();
+        });
+
+        it('DELETE /flashcard/:id → success by admin → 200', async () => {
+            const res = await request(app)
+            .delete(`/flashcard/${privateFlashcardId}`)
+            .set('Authorization', `Bearer ${adminToken}`);
+
+            expect(res.statusCode).toBe(200);
+            expect(res.body.message).toBe('Flashcard deleted !');
+        });
+    });
+
+
 
 });
 
