@@ -1,5 +1,9 @@
 import request from 'supertest';
 import app from '../server.js';
+import jwt from 'jsonwebtoken';
+import { db } from '../db/db.js';
+import { users } from '../db/schema.js';
+import { eq } from 'drizzle-orm';
 
 describe('Test auth route', () => {
 
@@ -44,6 +48,9 @@ describe('Test auth route', () => {
     expect(res.body.details).toHaveLength(4); 
   });
 
+});
+
+describe('Test auth login route', () => {
 
   it('POST /auth/login → Login successful', async () => {
     const body = {
@@ -108,8 +115,77 @@ describe('Test auth route', () => {
     expect(res.body.error).toBe('Invalid email or password !');
   });
 
-  //it('GET /auth/information', async => {
-    //TODO
-  //});
+});
 
+
+describe('GET /auth/information → Protected route', () => {
+  let validToken;
+  let userId;
+
+  beforeAll(async () => {
+    const [user] = await db.select().from(users).where(eq(users.email, 'test@test.com'));
+    userId = user.id;
+
+    validToken = jwt.sign(
+      {
+        userId: user.id,
+        email: user.email,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        admin: user.admin,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+  });
+
+  it('GET /auth/information → should return user info with valid token', async () => {
+    const res = await request(app)
+      .get('/auth/information')
+      .set('Authorization', `Bearer ${validToken}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.message).toBe('User information :');
+    expect(res.body.userData).toHaveProperty('id', userId);
+    expect(res.body.userData).toHaveProperty('firstname');
+    expect(res.body.userData).toHaveProperty('lastname');
+    expect(res.body.userData).toHaveProperty('email');
+  });
+
+  it('GET /auth/information → should fail without token', async () => {
+    const res = await request(app).get('/auth/information');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.error).toBe('Access token required !');
+  });
+
+  it('GET /auth/information → should fail with invalid token', async () => {
+    const res = await request(app)
+      .get('/auth/information')
+      .set('Authorization', 'Bearer invalidtoken123');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.error).toBe('Invalid token !');
+  });
+
+  it('GET /auth/information → should fail if user does not exist', async () => {
+    const fakeToken = jwt.sign(
+      {
+        userId: '00000000-0000-0000-0000-000000000000',
+        email: 'nouser@test.com',
+        firstname: 'No',
+        lastname: 'User',
+        admin: false,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    const res = await request(app)
+      .get('/auth/information')
+      .set('Authorization', `Bearer ${fakeToken}`);
+
+    expect(res.statusCode).toBe(404);
+    expect(res.body.error).toBe('User not found');
+  });
 });
