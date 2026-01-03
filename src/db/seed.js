@@ -1,5 +1,5 @@
 import { db } from './db.js'
-import { collections, flashcards, users } from './schema.js'
+import { collections, flashcards, users, progression } from './schema.js'
 import bcrypt from 'bcrypt'
 
 export async function seed() {
@@ -9,6 +9,7 @@ export async function seed() {
 		await db.delete(users)
 		await db.delete(collections)
 		await db.delete(flashcards)
+		await db.delete(progression) // au cas où
 
 		const hashedPassword1 = await bcrypt.hash('motdepasse', 12)
 		const hashedPassword2 = await bcrypt.hash('12345678', 12)
@@ -98,6 +99,26 @@ export async function seed() {
 		]
 
 		const resultFlashcards = await db.insert(flashcards).values(SeedFlashcards).returning()
+
+		const SeedProgression = [
+		{
+			flashcard_id: resultFlashcards[1].id,
+			user_id: result[0].id,
+			progress_level: 2,
+			last_review: new Date(),
+			next_review_date: new Date(),
+		},
+		{
+			flashcard_id: resultFlashcards[4].id, 
+			user_id: result[0].id,
+			progress_level: 3,
+			last_review: new Date(),
+			next_review_date: new Date(),
+		}
+		]
+
+		await db.insert(progression).values(SeedProgression)
+
 
 		console.log('Database seeded successfully!')
 		console.log('email : ', result[0].email)

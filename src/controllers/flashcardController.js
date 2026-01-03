@@ -136,6 +136,11 @@ export const reviseFlashcard = async (req, res)=>{
             return res.status(404).json({message : 'Flashcard not found !'})
         }
 
+        const [collection] = await db.select().from(collections).where(eq(collections.id,flashcard.collection_id))
+        if(collection.user_id!=req.user.userId && collection.private==true){
+            return res.status(403).json({message : 'This collection is private and it is not your flashcard !'})
+        }
+
         const last_review = new Date();
         let next_review_date = new Date(last_review);
 

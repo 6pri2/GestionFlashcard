@@ -2,7 +2,7 @@ import request from 'supertest';
 import app from '../server.js';
 import jwt from 'jsonwebtoken';
 import { db } from '../db/db.js';
-import { users, collections, flashcards } from '../db/schema.js';
+import { users, collections, flashcards, progression } from '../db/schema.js';
 import { eq } from 'drizzle-orm';
 
 describe('Flashcard routes - complete coverage', () => {
@@ -35,7 +35,6 @@ describe('Flashcard routes - complete coverage', () => {
 
         userCollectionId = collection.id;
     });
-
 
     describe('GET /flashcard → get flashcard', () => {
         // === PUBLIC FLASHCARD ===
@@ -331,6 +330,131 @@ describe('Flashcard routes - complete coverage', () => {
             expect(res.body.message).toBe('Flashcard updated !');
         });
     });
+
+    describe('Flashcard /revise/:id', () => {
+
+        // ================= AUTH =================
+        it('No token → 401', async () => {
+            const res = await request(app).patch(`/flashcard/revise/${publicFlashcard.id}`).send({ progress_level: 3 });
+            expect(res.statusCode).toBe(401);
+            expect(res.body.error).toBe('Access token required !');
+        });
+
+        it('Invalid token → 401', async () => {
+            const res = await request(app)
+                .patch(`/flashcard/revise/${publicFlashcard.id}`)
+                .set('Authorization', 'Bearer invalidtoken')
+                .send({ progress_level: 3 });
+            expect(res.statusCode).toBe(401);
+            expect(res.body.error).toBe('Invalid token !');
+        });
+
+        // ================= PARAMS =================
+        it('Invalid UUID → 400', async () => {
+            const res = await request(app)
+                .patch('/flashcard/revise/not-a-uuid')
+                .set('Authorization', `Bearer ${userToken}`)
+                .send({ progress_level: 3 });
+            expect(res.statusCode).toBe(400);
+            expect(res.body.error).toBe('Invalid params');
+        });
+
+        it('Flashcard does not exist → 404', async () => {
+            const res = await request(app)
+                .patch('/flashcard/revise/00000000-0000-0000-0000-000000000000')
+                .set('Authorization', `Bearer ${userToken}`)
+                .send({ progress_level: 3 });
+            expect(res.statusCode).toBe(404);
+            expect(res.body.message).toBe('Flashcard not found !');
+        });
+
+        // ================= BODY =================
+        it('Invalid progress_level < 1 → 400', async () => {
+            const res = await request(app)
+                .patch(`/flashcard/revise/${publicFlashcard.id}`)
+                .set('Authorization', `Bearer ${userToken}`)
+                .send({ progress_level: 0 });
+            expect(res.statusCode).toBe(400);
+        });
+
+        it('Invalid progress_level > 5 → 400', async () => {
+            const res = await request(app)
+                .patch(`/flashcard/revise/${publicFlashcard.id}`)
+                .set('Authorization', `Bearer ${userToken}`)
+                .send({ progress_level: 6 });
+            expect(res.statusCode).toBe(400);
+        });
+
+        it('Invalid progress_level non-integer → 400', async () => {
+            const res = await request(app)
+                .patch(`/flashcard/revise/${publicFlashcard.id}`)
+                .set('Authorization', `Bearer ${userToken}`)
+                .send({ progress_level: 3.5 });
+            expect(res.statusCode).toBe(400);
+        });
+
+        // ================= BUSINESS =================
+
+        it('Public flashcard → owner can create progression → 201', async () => {
+            const res = await request(app)
+                .patch(`/flashcard/revise/${publicFlashcard.id}`)
+                .set('Authorization', `Bearer ${userToken}`)
+                .send({ progress_level: 2 });
+            expect(res.statusCode).toBe(201);
+            expect(res.body.message).toBe('Progression created');
+            expect(res.body.data.progress_level).toBe(2);
+        });
+
+        it('Public flashcard → other user can create progression → 201', async () => {
+            const res = await request(app)
+                .patch(`/flashcard/revise/${publicFlashcard.id}`)
+                .set('Authorization', `Bearer ${otherToken}`)
+                .send({ progress_level: 3 });
+            expect(res.statusCode).toBe(201);
+            expect(res.body.message).toBe('Progression created');
+            expect(res.body.data.progress_level).toBe(3);
+        });
+
+        it('Private flashcard → owner can create progression → 201', async () => {
+            const res = await request(app)
+                .patch(`/flashcard/revise/${privateFlashcard.id}`)
+                .set('Authorization', `Bearer ${userToken}`)
+                .send({ progress_level: 4 });
+            expect(res.statusCode).toBe(201);
+            expect(res.body.message).toBe('Progression created');
+            expect(res.body.data.progress_level).toBe(4);
+        });
+
+        it('Private flashcard → other user cannot create progression → 403', async () => {
+            const res = await request(app)
+                .patch(`/flashcard/revise/${privateFlashcard.id}`)
+                .set('Authorization', `Bearer ${otherToken}`)
+                .send({ progress_level: 3 });
+            expect(res.statusCode).toBe(403);
+        });
+
+        // ================= UPDATE =================
+        it('Public flashcard → owner can update progression → 200', async () => {
+            const res = await request(app)
+                .patch(`/flashcard/revise/${publicFlashcard.id}`)
+                .set('Authorization', `Bearer ${userToken}`)
+                .send({ progress_level: 5 });
+            expect(res.statusCode).toBe(200);
+            expect(res.body.message).toBe('Progression updated');
+            expect(res.body.data.progress_level).toBe(5);
+        });
+
+        it('Public flashcard → other user can update progression → 200', async () => {
+            const res = await request(app)
+                .patch(`/flashcard/revise/${publicFlashcard.id}`)
+                .set('Authorization', `Bearer ${otherToken}`)
+                .send({ progress_level: 1 });
+            expect(res.statusCode).toBe(200);
+            expect(res.body.message).toBe('Progression updated');
+            expect(res.body.data.progress_level).toBe(1);
+        });
+    });
+
 
 
     describe('DELETE /flashcard/:id → delete flashcard', () => {
