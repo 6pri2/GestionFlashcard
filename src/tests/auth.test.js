@@ -45,9 +45,68 @@ describe('Test auth route', () => {
   });
 
 
-  //it('POST /auth/login', async () => {
-    //TODO
-  //});
+  it('POST /auth/login → Login successful', async () => {
+    const body = {
+      email: 'testuser@test.com',
+      password: 'securepassword123',
+    };
+
+    const res = await request(app)
+      .post('/auth/login')
+      .send(body);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.message).toBe('User logged in');
+
+    expect(res.body.userData).toHaveProperty('id');
+    expect(res.body.userData.email).toBe('testuser@test.com');
+
+    expect(res.body).toHaveProperty('token');
+    expect(typeof res.body.token).toBe('string');
+  });
+
+  it('POST /auth/login → Login failed with invalid body', async () => {
+    const body = {
+      email: 'not-an-email',
+      password: '123',
+    };
+
+    const res = await request(app)
+      .post('/auth/login')
+      .send(body);
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.error).toBe('Invalid body');
+    expect(res.body.details).toHaveLength(2);
+  });
+
+  it('POST /auth/login → Login failed with non-existing email', async () => {
+    const body = {
+      email: 'unknown@test.com',
+      password: 'securepassword123',
+    };
+
+    const res = await request(app)
+      .post('/auth/login')
+      .send(body);
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.error).toBe('Invalid email or password !');
+  });
+
+  it('POST /auth/login → Login failed with wrong password', async () => {
+    const body = {
+      email: 'testuser@test.com',
+      password: 'wrongpassword',
+    };
+
+    const res = await request(app)
+      .post('/auth/login')
+      .send(body);
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.error).toBe('Invalid email or password !');
+  });
 
   //it('GET /auth/information', async => {
     //TODO

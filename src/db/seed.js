@@ -2,7 +2,7 @@ import { db } from './db.js'
 import { collections, flashcards, users } from './schema.js'
 import bcrypt from 'bcrypt'
 
-async function seed() {
+export async function seed() {
 	console.log('Starting database seed...')
 
 	try {
@@ -99,5 +99,3 @@ async function seed() {
 		console.error('Error seeding database:', error)
 	}
 }
-
-seed()
