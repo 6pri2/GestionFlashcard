@@ -80,12 +80,36 @@ Pour assurer la modularité, la sécurité et la qualité du code, les technolog
 - **Supertest** : bibliothèque permettant de simuler des requêtes HTTP vers l’API, facilitant les tests d’intégration et la vérification des endpoints.  
 - **Babel** : transpileur JavaScript permettant d’utiliser des fonctionnalités modernes tout en garantissant la compatibilité avec l’environnement Node.js utilisé pour les tests.
 
-
-
 ## 3. Architecture du projet
-- Structure modulaire (routes, controllers, services, middlewares)
-- Dossier `src/db` pour Drizzle et seeders
-- Gestion de l’authentification et des rôles (user / admin)
+
+L'architecture du projet a été conçue pour être **modulaire, claire et facilement maintenable**, permettant d’ajouter ou de modifier des fonctionnalités sans impacter le reste du système.  
+L’organisation des dossiers reflète la séparation des responsabilités, garantissant lisibilité, testabilité et évolutivité.
+
+### 3.1 Organisation générale
+Le projet suit une structure modulaire, où chaque dossier correspond à un rôle précis dans le fonctionnement de l’API : logique métier, routes, accès aux données, middlewares et tests.  
+
+### 3.2 Arborescence des dossiers
+
+``` bash
+GestionFlashcard/
+├── src/
+│ ├── controllers/ # Logique métier des routes
+│ │ └── models/ # Définition des entités et schémas des données
+│ ├── db/ # Configuration DB, migrations, seeders
+│ ├── middlewares/ # Authentification, gestion des rôles, gestion des erreurs
+│ ├── routes/ # Définition des endpoints et gestion des requêtes HTTP
+│ └── tests/ # Tests unitaires et d'intégration (Jest + Supertest)
+│ └── server.js # Point d'entrée du serveur
+├── .env # Variables d'environnement
+├── .gitignore # Fichiers à ignorer par Git
+├── babel.config.js # Configuration Babel
+├── drizzle.config.js # Configuration de Drizzle ORM
+├── jest.config.cjs # Configuration Jest
+├── jest.setup.js # Setup des tests Jest
+├── package.json # Dépendances et scripts npm
+├── package-lock.json # Version lock des packages
+└── README.md # Documentation du projet
+```
 
 ## 4. Installation du projet
 ### 4.1 Prérequis
