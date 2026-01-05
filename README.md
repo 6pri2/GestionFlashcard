@@ -112,55 +112,79 @@ GestionFlashcard/
 ```
 
 ## 4. Installation du projet
+
+Cette section décrit les étapes nécessaires pour préparer l’environnement et lancer l’API de manière efficace et reproductible.
+
 ### 4.1 Prérequis
-- Node.js >= 18
-- npm ou yarn
+Avant toute installation, assurez-vous de disposer des éléments suivants :  
+- **Node.js** version 18 ou supérieure, pour l’exécution du serveur et des scripts.  
+- **npm** (ou yarn) pour la gestion des dépendances.  
+- Un terminal compatible (bash, zsh, ou Windows PowerShell / Terminal).  
+
 ### 4.2 Installation des dépendances
+Récupérez les dépendances du projet depuis le registre npm :  
+
 ```bash
 npm install
 ```
+Cette commande installe l’ensemble des librairies nécessaires au fonctionnement de l’API, y compris Express, Drizzle ORM, Zod, bcrypt, jsonwebtoken, et les outils de tests (Jest, Supertest, Babel).
 
-## 5. Configuration
+### 4.3 Configuration des variables d’environnement
+Le projet nécessite la présence d’un fichier `.env` à la racine afin de définir les variables d’environnement indispensables à son fonctionnement.  
+Ces variables permettent notamment de configurer l’accès à la base de données et la sécurisation de l’authentification.
 
-### 5.1 Variables d’environnement
-L’API nécessite un fichier `.env` pour fonctionner correctement.  
-Les variables à définir sont :
+Les variables requises sont les suivantes :
+- `DB_FILE_NAME` : chemin vers le fichier de base de données SQLite.  
+- `JWT_SECRET` : clé secrète utilisée pour la génération et la vérification des tokens JWT.
 
-- `DB_FILE_NAME` : chemin vers la base SQLite (ex. `file:local.db`)  
-- `JWT_SECRET` : clé secrète pour signer les JWT  
+Exemple de fichier `.env` :
 
-### 5.2 Exemple de fichier `.env`
 ```env
 DB_FILE_NAME=file:local.db
 JWT_SECRET=001628da30d11a300369f28b20c2b4acbfab0f3182f998fe6454242df9a97d4143849c05cb3d537cea687da723c0c1f73f1c8e1d721dfdf3237f2afc015ae297
 ```
 
-## 6. Initialisation de la base de données
+### 4.4 Initialisation de la base de données
+L’initialisation de la base de données repose sur l’utilisation de **Drizzle ORM** et s’effectue en deux étapes principales.
 
-### 6.1 Génération des tables
-Pour créer ou mettre à jour les tables selon le schéma Drizzle :  
+La première consiste à créer ou mettre à jour les tables selon le schéma défini dans le projet :
+
+```bash
 npm run db:push
+```
 
-### 6.2 Données de test / seeding
-Pour insérer des données de test dans la base :  
+Cette commande applique automatiquement la structure de la base de données en fonction des fichiers de configuration définis avec Drizzle ORM.
+
+La seconde étape permet d’insérer des données de test afin de disposer d’un environnement prêt à l’emploi :
+
+```bash
 npm run db:seed
+```
 
-> ⚠️ Il est recommandé de lancer `db:push` puis `db:seed` avant de démarrer le serveur ou de lancer les tests pour garantir un état cohérent de la base.
+Ce script initialise la base avec des utilisateurs, des collections et des flashcards de démonstration, permettant de disposer rapidement d’un environnement fonctionnel pour les tests manuels et automatisés.
 
----
+Dans le cadre des tests automatisés, cette étape est essentielle afin de garantir des résultats reproductibles et cohérents.
 
-## 7. Lancement du projet
+> ⚠️ Il est fortement recommandé d’exécuter successivement `db:push` puis `db:seed` avant le premier lancement du serveur ou l’exécution des tests, afin de garantir un état cohérent et stable de la base de données.
 
-### 7.1 Mode développement
-Pour démarrer le serveur en mode développement avec rechargement automatique :  
+### 4.5 Lancement du serveur en mode développement
+Le serveur peut être lancé en mode développement à l’aide de la commande suivante :
+
+```bash
 npm run dev
+``` 
+Ce mode utilise `nodemon` pour redémarrer automatiquement le serveur à chaque modification du code source, améliorant ainsi la rapidité des cycles de développement et facilitant les phases de test.
 
-### 7.2 Vérification du bon fonctionnement
-- Le serveur sera accessible sur le port configuré (ex. http://localhost:3000)  
-- Pour visualiser et gérer la base via Drizzle Studio :  
+Par défaut, l’API est accessible à l’adresse suivante :
+- http://localhost:3000
+
+Il est également possible de visualiser et d’administrer la base de données à l’aide de **Drizzle Studio** grâce à la commande suivante :
+
+```bash
 npm run db:studio
+```
 
----
+Cette interface permet d’inspecter les tables, de consulter les données et de vérifier rapidement la cohérence de la base lors du développement.
 
 ## 8. Tests
 
