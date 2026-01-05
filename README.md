@@ -1,5 +1,43 @@
 # API RESTful de gestion de flashcards – Révision par répétition espacée
 
+## Sommaire
+
+- [1. Présentation du projet](#1-présentation-du-projet)  
+  - [1.1 Contexte](#11-contexte)  
+  - [1.2 Objectifs](#12-objectifs)  
+  - [1.3 Fonctionnalités principales](#13-fonctionnalités-principales)  
+- [2. Technologies utilisées](#2-technologies-utilisées)  
+  - [2.1 Outils de développement](#21-outils-de-développement)  
+  - [2.2 Librairies & Frameworks](#22-librairies--frameworks)  
+- [3. Architecture du projet](#3-architecture-du-projet)  
+- [4. Installation du projet](#4-installation-du-projet)  
+  - [4.1 Prérequis](#41-prérequis)  
+  - [4.2 Installation des dépendances](#42-installation-des-dépendances)  
+- [5. Configuration](#5-configuration)  
+  - [5.1 Variables d’environnement](#51-variables-denvironnement)  
+  - [5.2 Exemple de fichier `.env`](#52-exemple-de-fichier-env)  
+- [6. Initialisation de la base de données](#6-initialisation-de-la-base-de-données)  
+  - [6.1 Génération des tables](#61-génération-des-tables)  
+  - [6.2 Données de test / seeding](#62-données-de-test--seeding)  
+- [7. Lancement du projet](#7-lancement-du-projet)  
+  - [7.1 Mode développement](#71-mode-développement)  
+  - [7.2 Vérification du bon fonctionnement](#72-vérification-du-bon-fonctionnement)  
+- [8. Tests](#8-tests)  
+  - [8.1 Tests manuels](#81-tests-manuels)  
+  - [8.2 Tests automatiques](#82-tests-automatiques)  
+- [9. Fonctionnalités détaillées](#9-fonctionnalités-détaillées)  
+  - [9.1 Authentification](#91-authentification)  
+  - [9.2 Gestion des collections](#92-gestion-des-collections)  
+  - [9.3 Gestion des flashcards](#93-gestion-des-flashcards)  
+  - [9.4 Répétition espacée](#94-répétition-espacée)  
+  - [9.5 Gestion des utilisateurs (admin, optionnel)](#95-gestion-des-utilisateurs-admin-optionnel)  
+- [10. Documentation de l’API](#10-documentation-de-lapi)  
+- [11. Modèle de données](#11-modèle-de-données)  
+  - [11.1 Schéma entité–relation](#111-schéma-entité-relation)  
+  - [11.2 Description des entités](#112-description-des-entités)  
+- [12. Auteurs](#12-auteurs)
+
+
 ## 1. Présentation du projet
 ### 1.1 Contexte
 ### 1.2 Objectifs
