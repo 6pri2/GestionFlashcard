@@ -39,9 +39,24 @@
 
 
 ## 1. Présentation du projet
+## 1. Présentation du projet
+
 ### 1.1 Contexte
+Dans le cadre de l'apprentissage assisté par technologie, ce projet vise à développer une API RESTful dédiée à la gestion de collections de flashcards.  
+L'objectif est de fournir une infrastructure backend sécurisée et modulable permettant la création, la consultation et la révision des flashcards selon un algorithme de répétition espacée, favorisant la mémorisation à long terme.  
+Cette API est conçue pour être exploitable par des clients externes ou des applications frontend, sans interface utilisateur intégrée à ce stade.
+
 ### 1.2 Objectifs
+Ce projet poursuit un double objectif :  
+1. Offrir une gestion complète et sécurisée des utilisateurs et de leurs collections, incluant un contrôle granulaire des droits d’accès et la possibilité de partager des collections publiques ou privées.  
+2. Mettre en œuvre un système de révision basé sur la répétition espacée, optimisant la rétention de l’information et améliorant l’efficacité des sessions d’apprentissage.
+
 ### 1.3 Fonctionnalités principales
+- **Inscription et authentification** : sécurisation des comptes utilisateurs par gestion des identifiants et chiffrement des mots de passe.  
+- **Gestion des collections** : création, modification, consultation et suppression des collections, avec un mécanisme clair de contrôle de visibilité (publique ou privée).  
+- **Gestion des flashcards** : chaque flashcard comporte un recto, un verso et éventuellement des supports multimédias ou liens externes, permettant une structuration riche du contenu pédagogique.  
+- **Révision assistée par répétition espacée** : calcul automatique des intervalles de révision pour chaque flashcard, en fonction de son niveau de maîtrise, afin d’optimiser l’apprentissage.  
+- **Administration** : fonctionnalités réservées aux administrateurs pour superviser les utilisateurs et gérer l’impact de leurs actions sur les collections et flashcards associées.
 
 ## 2. Technologies utilisées
 ### 2.1 Outils de développement
