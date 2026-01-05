@@ -186,21 +186,49 @@ npm run db:studio
 
 Cette interface permet d’inspecter les tables, de consulter les données et de vérifier rapidement la cohérence de la base lors du développement.
 
-## 8. Tests
+## 5. Tests
 
-### 8.1 Tests manuels
-- Utilisation de Thunderbird ou Postman pour tester les endpoints  
-- Vérification des fonctionnalités : inscription, connexion, CRUD collections & flashcards, révision
+Des tests manuels et automatisés ont été mis en place afin de garantir le bon fonctionnement, la stabilité et la conformité de l’API aux spécifications définies.
 
-### 8.2 Tests automatiques
-Pour exécuter les tests automatiques :  
+### 5.1 Tests manuels
+Les tests manuels ont été réalisés à l’aide de **Thunder Client** (extension Visual Studio Code) ou d’outils équivalents tels que Postman.
+
+Ils permettent de :
+- vérifier le bon fonctionnement des endpoints,
+- tester les différents scénarios d’authentification et de permissions (utilisateur / administrateur),
+- valider les opérations de création, modification, consultation et suppression des collections et flashcards,
+- contrôler le comportement du système de répétition espacée lors des révisions.
+
+### 5.2 Tests automatisés
+Des tests automatisés ont été implémentés afin de vérifier de manière systématique et reproductible le comportement de l’API.
+
+Les technologies utilisées sont :
+- **Jest** : framework de tests pour l’exécution des tests unitaires et fonctionnels,
+- **Supertest** : bibliothèque permettant de simuler des requêtes HTTP vers l’API,
+- **Babel** : transpileur JavaScript garantissant la compatibilité de l’environnement de tests.
+
+Les tests sont exécutés à l’aide de la commande suivante :
+
+```bash
 npm test
+```
 
-- Utilise **Jest**, **Supertest** et **Babel**  
-- Avant de lancer les tests, la base est **réinitialisée et seedée automatiquement** pour garantir un état cohérent  
-- Les tests sont exécutés séquentiellement (`--runInBand`) pour éviter les conflits sur SQLite
+Cette commande :
+- définit l’environnement d’exécution en mode test (`NODE_ENV=test`),
+- initialise une base de données dédiée aux tests,
+- exécute automatiquement le script de seeding afin de garantir un état connu et cohérent de la base,
+- lance l’ensemble des tests de manière séquentielle (`--runInBand`) afin d’éviter les conflits liés à l’utilisation de SQLite.
 
----
+À l’issue de l’exécution des tests, la base de données est à nouveau seedée afin de conserver un état propre et exploitable pour d’éventuelles vérifications manuelles.
+
+Les tests automatisés couvrent l’ensemble des cas fonctionnels identifiés lors de la conception de l’API, notamment :
+- les scénarios d’authentification et de gestion des rôles,
+- la gestion des collections et des flashcards,
+- le respect des droits d’accès selon la visibilité des ressources,
+- le comportement du système de répétition espacée.
+
+Les erreurs internes du serveur (codes HTTP 500) ne sont volontairement pas testées, celles-ci relevant de cas exceptionnels non déterministes.  
+L’objectif principal des tests est de valider le bon fonctionnement de l’API dans des conditions normales d’utilisation et de garantir la fiabilité des fonctionnalités implémentées.
 
 ## 9. Fonctionnalités détaillées
 
