@@ -39,7 +39,6 @@
 
 
 ## 1. Présentation du projet
-## 1. Présentation du projet
 
 ### 1.1 Contexte
 Dans le cadre de l'apprentissage assisté par technologie, ce projet vise à développer une API RESTful dédiée à la gestion de collections de flashcards.  
@@ -57,21 +56,31 @@ Ce projet poursuit un double objectif :
 - **Gestion des flashcards** : chaque flashcard comporte un recto, un verso et éventuellement des supports multimédias ou liens externes, permettant une structuration riche du contenu pédagogique.  
 - **Révision assistée par répétition espacée** : calcul automatique des intervalles de révision pour chaque flashcard, en fonction de son niveau de maîtrise, afin d’optimiser l’apprentissage.  
 - **Administration** : fonctionnalités réservées aux administrateurs pour superviser les utilisateurs et gérer l’impact de leurs actions sur les collections et flashcards associées.
-
 ## 2. Technologies utilisées
+
 ### 2.1 Outils de développement
-- IDE : Visual Studio Code
-- Node.js
-- SQLite (via `@libsql/client`)
-### 2.2 Librairies & Frameworks
-- Express
-- Drizzle ORM / Drizzle-kit
-- Zod (validation des données)
-- bcrypt (hachage des mots de passe)
-- jsonwebtoken (JWT)
-- dotenv (variables d’environnement)
-- nodemon (rechargement dev)
-- Jest + Supertest + Babel (tests automatiques)
+Le projet a été développé en s’appuyant sur des outils modernes et robustes afin de garantir efficacité, maintenabilité et qualité du code :  
+- **IDE : Visual Studio Code** pour la rédaction et l’organisation du code.  
+- **Node.js** comme environnement d’exécution JavaScript côté serveur.  
+- **SQLite** via `@libsql/client` pour la gestion locale de la base de données, offrant une solution légère, rapide et facilement déployable.  
+
+### 2.2 Librairies et Frameworks
+Pour assurer la modularité, la sécurité et la qualité du code, les technologies suivantes ont été intégrées :  
+
+- **Express** : framework web minimaliste pour la création de routes et le traitement des requêtes HTTP.  
+- **Drizzle ORM / Drizzle-kit** : gestion des requêtes SQL et migrations de la base, garantissant une intégrité et une structure cohérente des données.  
+- **Zod** : validation stricte des données entrantes (body, params, query) pour prévenir les erreurs et sécuriser l’API.  
+- **bcrypt** : chiffrement des mots de passe pour sécuriser l’authentification des utilisateurs.  
+- **jsonwebtoken (JWT)** : génération et vérification des tokens pour un contrôle sécurisé des accès et des sessions.  
+- **dotenv** : gestion centralisée des variables d’environnement sensibles.  
+- **nodemon** : rechargement automatique du serveur en mode développement, favorisant un workflow efficace.  
+
+#### Outils de tests automatisés
+- **Jest** : framework de tests unitaires et fonctionnels, utilisé pour vérifier le comportement attendu des fonctions et routes de l’API.  
+- **Supertest** : bibliothèque permettant de simuler des requêtes HTTP vers l’API, facilitant les tests d’intégration et la vérification des endpoints.  
+- **Babel** : transpileur JavaScript permettant d’utiliser des fonctionnalités modernes tout en garantissant la compatibilité avec l’environnement Node.js utilisé pour les tests.
+
+
 
 ## 3. Architecture du projet
 - Structure modulaire (routes, controllers, services, middlewares)
