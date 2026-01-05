@@ -286,8 +286,14 @@ L’objectif principal des tests est de valider le bon fonctionnement de l’API
 - Champs pertinents pour la répétition espacée  
 - Relations entre utilisateurs, collections et flashcards
 
----
+## 8. Auteurs
 
-## 12. Auteurs
-- Nom / Prénom / Groupe  
-- Mail de contact si nécessaire
+Ce projet a été réalisé dans le cadre du cours **R5.05 – Projet de groupe**, encadré par **M. Clément Catel** :   
+- Github : `ClementCatel`  
+- Email : `clement.catel@unicaen.fr`
+- Sujet : `https://clementcatel.notion.site/R5-05-Projet-de-groupe-2ae3b8266dbb8014b0aac3869c316f7c` 
+
+Réalisé par : 
+
+- **Duroy Cyprien** – Github : `6pri2` – Email : `cyprien.duroy@etu.unicaen.fr`  
+- **Alexandre Le Roy** – Github : `z0ralex` – Email : `alexandre.leroy01@etu.unicaen.fr`  
