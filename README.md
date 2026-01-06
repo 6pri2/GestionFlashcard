@@ -230,6 +230,140 @@ Les tests automatisés couvrent l’ensemble des cas fonctionnels identifiés lo
 Les erreurs internes du serveur (codes HTTP 500) ne sont volontairement pas testées, celles-ci relevant de cas exceptionnels non déterministes.  
 L’objectif principal des tests est de valider le bon fonctionnement de l’API dans des conditions normales d’utilisation et de garantir la fiabilité des fonctionnalités implémentées.
 
+## 6. Documentation de l’API
+
+### 6.1 Authentification
+
+Les endpoints d’authentification permettent la création de compte, la connexion et la récupération des informations de l’utilisateur connecté.  
+L’authentification repose sur des JSON Web Tokens (JWT) transmis via l’en-tête `Authorization`.
+
+---
+
+### POST /auth/register
+
+**Description**  
+Crée un nouveau compte utilisateur.
+
+**Authentification requise**  
+Aucune.
+
+**Validation (Zod)**  
+- `email` : string valide au format email  
+- `firstname` : string de taille entre 3 et 30 caractères
+- `lastname` : string de taille entre 3 et 30 caractères 
+- `password` : string de taille entre 6 et 255 caractères
+
+**Body attendu**
+- `email` (string)
+- `firstname` (string)
+- `lastname` (string)
+- `password` (string)
+```json
+{
+  "email" : "test3@test.com",
+  "firstname" : "Édouard",
+  "lastname" : "Paul",
+  "password" : "cypcyp"
+}
+```
+**Réponse – Succès (201)**
+```json
+{
+  "message": "User created",
+  "userDate": {
+    "email": "test3@test.com",
+    "firstname": "Édouard",
+    "lastname": "Paul",
+    "id": "fca23035-97e9-4007-a296-9e8532183906"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmY2EyMzAzNS05N2U5LTQwMDctYTI5Ni05ZTg1MzIxODM5MDYiLCJlbWFpbCI6InRlc3QzQHRlc3QuY29tIiwiZmlyc3RuYW1lIjoiw4lkb3VhcmQiLCJsYXN0bmFtZSI6IlBhdWwiLCJpYXQiOjE3Njc3MzMzNzUsImV4cCI6MTc2NzgxOTc3NX0.2vRZofkxQarrxsy_93MLhp0XezfZuwBte3K5MK2JrnI"
+}
+```
+
+**Erreurs possibles**
+- `400 Bad Request` : données invalides (échec de la validation Zod)
+- `500 Internal Server Error` : erreur interne du serveur
+
+---
+
+### POST /auth/login
+
+**Description**  
+Authentifie un utilisateur existant et retourne un token JWT permettant d’accéder aux routes protégées de l’API.
+
+**Authentification requise**  
+Aucune.
+
+**Validation (Zod)**  
+- `email` : string valide au format email  
+- `password` : string non vide de taille entre 6 et 255 caractères
+
+**Body attendu**
+- `email` (string)
+- `password` (string)
+
+```json
+{
+  "email" : "test@test.com",
+  "password" : "motdepasse"
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  "message": "User logged in",
+  "userData": {
+    "id": "3e5ab941-2b2a-4f57-958d-a361a82628c2",
+    "email": "test@test.com"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzZTVhYjk0MS0yYjJhLTRmNTctOTU4ZC1hMzYxYTgyNjI4YzIiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJmaXJzdG5hbWUiOiJhbGV4YW5kcmUiLCJsYXN0bmFtZSI6IkxlUm95IiwiYWRtaW4iOmZhbHNlLCJpYXQiOjE3Njc3MzMyNDUsImV4cCI6MTc2NzgxOTY0NX0.XTEtfyn7kSArH6IXmjJOO3ScHQ7rBEL_pmWbg-5-s0c"
+}
+```
+
+**Erreurs possibles**
+- `400 Bad Request` : données invalides (échec de la validation Zod)
+- `401 Unauthorized` : email ou mot de passe incorrect
+- `500 Internal Server Error` : erreur interne du serveur
+
+---
+
+### GET /auth/information
+
+**Description**  
+Récupère les informations du compte de l’utilisateur actuellement authentifié.
+
+**Authentification requise**  
+Oui — token JWT valide.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+Aucun.
+
+**Réponse – Succès (200)**
+```json
+{
+  "message": "User information :",
+  "userData": {
+    "id": "fca23035-97e9-4007-a296-9e8532183906",
+    "firstname": "Édouard",
+    "lastname": "Paul",
+    "email": "test3@test.com"
+  }
+}
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `404 Not Found` : utilisateur non trouvé
+- `500 Internal Server Error` : erreur interne du serveur
+
+
 ## 9. Fonctionnalités détaillées
 
 ### 9.1 Authentification
