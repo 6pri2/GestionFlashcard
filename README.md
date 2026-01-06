@@ -775,6 +775,236 @@ Oui — JWT valide.
 #TODO
 ---
 
+### 6.3 Flashcards
+
+Les endpoints Flashcards permettent de créer, consulter, modifier, supprimer et réviser les flashcards.  
+Toutes les routes nécessitent **un utilisateur authentifié** via JWT.
+
+---
+
+### GET /flashcards/:id
+
+**Description**  
+Récupère une flashcard par son identifiant.
+
+**Authentification requise**  
+Oui — JWT valide.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+
+**Validation (Zod)**  
+- `id` : UUID valide (paramètre de route)
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+- `id` (route param, UUID) : identifiant de la flashcard
+
+**Body attendu**
+Aucun.
+
+**Réponse – Succès (200)**
+```json
+{
+  #TODO
+}
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `403 Forbidden` : utilisateur non autorisé
+- `404 Not Found` : flashcard non trouvée
+- `500 Internal Server Error` : erreur interne du serveur
+
+---
+
+### POST /flashcards/
+
+**Description**  
+Crée une nouvelle flashcard dans une collection.
+
+**Authentification requise**  
+Oui — JWT valide.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+
+**Validation (Zod)**  
+⚠️#TODO
+- `email` : string valide au format email  
+- `password` : string non vide de taille entre 6 et 255 caractères
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+Aucun.
+
+**Body attendu**
+⚠️#TODO
+- `email` (string)
+- `password` (string)
+
+```json
+{
+  ⚠️#TODO
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  #TODO
+}
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `500 Internal Server Error` : erreur interne du serveur
+#TODO
+
+---
+
+### DELETE /flashcards/:id
+
+**Description**  
+Supprime une flashcard existante.
+
+**Authentification requise**  
+Oui — JWT valide, propriétaire ou admin.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+
+**Validation (Zod)**  
+- `id` : UUID valide (paramètre de route)
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+- `id` UUID valide : identifiant de la flashcard
+
+**Body attendu**
+⚠️#TODO
+- `email` (string)
+- `password` (string)
+
+```json
+{
+  ⚠️#TODO
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  #TODO
+}
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `500 Internal Server Error` : erreur interne du serveur
+#TODO
+
+---
+
+### PATCH /flashcards/:id
+
+**Description**  
+Modifie une flashcard existante (front, back, URLs).
+
+**Authentification requise**  
+Oui — JWT valide, propriétaire ou admin.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+
+**Validation (Zod)**  
+⚠️#TODO
+- `email` : string valide au format email  
+- `password` : string non vide de taille entre 6 et 255 caractères
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+- `id` UUID valide : identifiant de la flashcard
+
+**Body attendu**
+⚠️#TODO
+- `email` (string)
+- `password` (string)
+
+```json
+{
+  ⚠️#TODO
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  #TODO
+}
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `500 Internal Server Error` : erreur interne du serveur
+#TODO
+
+---
+
+### PATCH /flashcards/revise/:id
+
+**Description**  
+Enregistre une révision d’une flashcard et met à jour son niveau et la date de prochaine révision.
+
+**Authentification requise**  
+Oui — JWT valide.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+
+**Validation (Zod)**  
+⚠️#TODO
+- `email` : string valide au format email  
+- `password` : string non vide de taille entre 6 et 255 caractères
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+- `id` UUID valide : identifiant de la flashcard
+
+**Body attendu**
+⚠️#TODO
+- `email` (string)
+- `password` (string)
+
+```json
+{
+  ⚠️#TODO
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  #TODO
+}
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `500 Internal Server Error` : erreur interne du serveur
+#TODO
+
+
 
 
 ## 9. Fonctionnalités détaillées
