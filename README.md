@@ -1004,9 +1004,156 @@ Oui — JWT valide.
 - `500 Internal Server Error` : erreur interne du serveur
 #TODO
 
+---
 
+### 6.4 Utilisateurs (Admin)
 
+Ces endpoints permettent à un administrateur de gérer les utilisateurs.  
+Toutes les routes nécessitent **un JWT valide** et **un rôle admin**.
 
+---
+
+### GET /users
+
+**Description**  
+Liste tous les utilisateurs triés par date de création (les plus récents en premier).
+
+**Authentification requise**  
+Oui — JWT valide et rôle `admin`.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+- `authorizeAdmin` : vérifie que l’utilisateur est admin
+
+**Validation (Zod)**  
+⚠️#TODO
+Aucun.
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+⚠️#TODO
+Aucun.
+
+**Body attendu**
+⚠️#TODO
+- `email` (string)
+- `password` (string)
+
+```json
+{
+  ⚠️#TODO
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  #TODO
+}
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `500 Internal Server Error` : erreur interne du serveur
+#TODO
+
+---
+
+### GET /users/:id
+
+**Description**  
+Récupère les informations d’un utilisateur spécifique.
+
+**Authentification requise**  
+Oui — JWT valide et rôle `admin`.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+- `authorizeAdmin` : vérifie que l’utilisateur est admin
+
+**Validation (Zod)**  
+⚠️#TODO
+- `id` : UUID valide (paramètre de route)
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+⚠️#TODO
+- `id` UUID valide : identifiant de la personne
+
+**Body attendu**
+⚠️#TODO
+- `email` (string)
+- `password` (string)
+
+```json
+{
+  ⚠️#TODO
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  #TODO
+}
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `500 Internal Server Error` : erreur interne du serveur
+#TODO
+---### DELETE /users/:id
+
+**Description**  
+Supprime un utilisateur et gère les conséquences sur ses collections et flashcards.
+
+**Authentification requise**  
+Oui — JWT valide et rôle `admin`.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+- `authorizeAdmin` : vérifie que l’utilisateur est admin
+
+**Validation (Zod)**  
+⚠️#TODO
+- `id` : UUID valide (paramètre de route)
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+⚠️#TODO
+- `id` UUID valide : identifiant de la personne
+
+**Body attendu**
+⚠️#TODO
+- `email` (string)
+- `password` (string)
+
+```json
+{
+  ⚠️#TODO
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  #TODO
+}
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `500 Internal Server Error` : erreur interne du serveur
+#TODO
+
+>⚠️Est ce qu'on fait un patch ? 
+---
 ## 9. Fonctionnalités détaillées
 
 ### 9.1 Authentification
