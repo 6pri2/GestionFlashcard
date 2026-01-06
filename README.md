@@ -247,11 +247,21 @@ Crée un nouveau compte utilisateur.
 **Authentification requise**  
 Aucune.
 
+**Middleware**
+Aucun.
+
 **Validation (Zod)**  
 - `email` : string valide au format email  
 - `firstname` : string de taille entre 3 et 30 caractères
 - `lastname` : string de taille entre 3 et 30 caractères 
 - `password` : string de taille entre 6 et 255 caractères
+
+
+**Headers**
+Aucun.
+
+**Paramètres**
+Aucun.
 
 **Body attendu**
 - `email` (string)
@@ -294,9 +304,18 @@ Authentifie un utilisateur existant et retourne un token JWT permettant d’acc�
 **Authentification requise**  
 Aucune.
 
+**Middleware**
+Aucun.
+
 **Validation (Zod)**  
 - `email` : string valide au format email  
 - `password` : string non vide de taille entre 6 et 255 caractères
+
+**Headers**
+Aucun.
+
+**Paramètres**
+Aucun.
 
 **Body attendu**
 - `email` (string)
@@ -339,11 +358,26 @@ Oui — token JWT valide.
 **Middleware**
 - `authenticateToken` : vérifie la présence et la validité du JWT
 
+**Validation (Zod)**  
+- `email` : string valide au format email  
+- `password` : string non vide de taille entre 6 et 255 caractères
+
 **Headers**
 - `Authorization: Bearer <token>`
 
 **Paramètres**
 Aucun.
+
+**Body attendu**
+- `email` (string)
+- `password` (string)
+
+```json
+{
+  "email" : "test@test.com",
+  "password" : "motdepasse"
+}
+```
 
 **Réponse – Succès (200)**
 ```json
@@ -362,6 +396,385 @@ Aucun.
 - `401 Unauthorized` : token manquant, expiré ou invalide
 - `404 Not Found` : utilisateur non trouvé
 - `500 Internal Server Error` : erreur interne du serveur
+
+### 6.2 Collections
+
+Les endpoints Collections permettent de créer, consulter, modifier, supprimer et rechercher des collections de flashcards.  
+Toutes les routes nécessitent **un utilisateur authentifié** via JWT.
+
+---
+
+### POST /collections/createCollection
+
+**Description**  
+Crée une nouvelle collection de flashcards.
+
+**Authentification requise**  
+Oui — JWT valide.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+
+**Validation (Zod)**  
+⚠️#TODO
+- `email` : string valide au format email  
+- `password` : string non vide de taille entre 6 et 255 caractères
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+⚠️#TODO
+
+**Body attendu**
+⚠️#TODO
+- `email` (string)
+- `password` (string)
+
+```json
+{
+  ⚠️#TODO
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  #TODO
+}
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `500 Internal Server Error` : erreur interne du serveur
+#TODO
+
+---
+
+### POST /collections/updateCollection
+
+**Description**  
+Modifie une collection existante (titre, description, visibilité).
+
+**Authentification requise**  
+Oui — JWT valide.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+
+**Validation (Zod)**  
+⚠️#TODO
+- `email` : string valide au format email  
+- `password` : string non vide de taille entre 6 et 255 caractères
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+⚠️#TODO
+
+**Body attendu**
+⚠️#TODO
+- `email` (string)
+- `password` (string)
+
+```json
+{
+  ⚠️#TODO
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  #TODO
+}
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `500 Internal Server Error` : erreur interne du serveur
+#TODO
+
+
+---
+
+### GET /collections/collectionById/:id
+
+**Description**  
+Récupère une collection par son identifiant.
+
+**Authentification requise**  
+Oui — JWT valide.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+
+**Validation (Zod)**  
+⚠️#TODO
+- `email` : string valide au format email  
+- `password` : string non vide de taille entre 6 et 255 caractères
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+⚠️#TODO
+
+**Body attendu**
+⚠️#TODO
+- `email` (string)
+- `password` (string)
+
+```json
+{
+  ⚠️#TODO
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  #TODO
+}
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `500 Internal Server Error` : erreur interne du serveur
+#TODO
+---
+
+### GET /collections/collectionByTitle/:title
+
+**Description**  
+Recherche des collections publiques par titre.
+
+**Authentification requise**  
+Oui — JWT valide.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+
+**Validation (Zod)**  
+⚠️#TODO
+- `email` : string valide au format email  
+- `password` : string non vide de taille entre 6 et 255 caractères
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+⚠️#TODO
+
+**Body attendu**
+⚠️#TODO
+- `email` (string)
+- `password` (string)
+
+```json
+{
+  ⚠️#TODO
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  #TODO
+}
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `500 Internal Server Error` : erreur interne du serveur
+#TODO
+---
+
+### GET /collections/myCollection
+
+**Description**  
+Liste toutes les collections appartenant à l’utilisateur connecté.
+
+**Authentification requise**  
+Oui — JWT valide.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+
+**Validation (Zod)**  
+⚠️#TODO
+- `email` : string valide au format email  
+- `password` : string non vide de taille entre 6 et 255 caractères
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+⚠️#TODO
+
+**Body attendu**
+⚠️#TODO
+- `email` (string)
+- `password` (string)
+
+```json
+{
+  ⚠️#TODO
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  #TODO
+}
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `500 Internal Server Error` : erreur interne du serveur
+#TODO
+---
+
+### DELETE /collections/deleteCollection/:id
+
+**Description**  
+Supprime une collection existante et ses flashcards associées.
+
+**Authentification requise**  
+Oui — JWT valide - propriétaire de la collection ou admin..
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+
+**Validation (Zod)**  
+⚠️#TODO
+- `email` : string valide au format email  
+- `password` : string non vide de taille entre 6 et 255 caractères
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+⚠️#TODO
+
+**Body attendu**
+⚠️#TODO
+- `email` (string)
+- `password` (string)
+
+```json
+{
+  ⚠️#TODO
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  #TODO
+}
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `500 Internal Server Error` : erreur interne du serveur
+#TODO
+---
+
+### GET /collections/:id/review
+
+**Description**  
+Récupère les flashcards à réviser dans une collection pour l’utilisateur connecté, selon le système de répétition espacée.
+
+**Authentification requise**  
+Oui — JWT valide.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+
+**Validation (Zod)**  
+⚠️#TODO
+- `email` : string valide au format email  
+- `password` : string non vide de taille entre 6 et 255 caractères
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+⚠️#TODO
+
+**Body attendu**
+⚠️#TODO
+- `email` (string)
+- `password` (string)
+
+```json
+{
+  ⚠️#TODO
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  #TODO
+}
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `500 Internal Server Error` : erreur interne du serveur
+#TODO
+---
+
+### GET /collections/review/all
+
+**Description**  
+Récupère toutes les flashcards à réviser pour l’utilisateur connecté, toutes collections confondues.
+
+**Authentification requise**  
+Oui — JWT valide.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+
+**Validation (Zod)**  
+⚠️#TODO
+- `email` : string valide au format email  
+- `password` : string non vide de taille entre 6 et 255 caractères
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+⚠️#TODO
+
+**Body attendu**
+⚠️#TODO
+- `email` (string)
+- `password` (string)
+
+```json
+{
+  ⚠️#TODO
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  #TODO
+}
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `500 Internal Server Error` : erreur interne du serveur
+#TODO
+---
+
 
 
 ## 9. Fonctionnalités détaillées
