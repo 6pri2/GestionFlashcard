@@ -42,7 +42,7 @@ async function seed() {
 				title : 'Les membres du Campus 3',
 				description : 'Connaissez-vous tous les membres du Campus 3 ? ',
 				user_id : result[0].id,
-				private : true,
+				is_private : true,
 			}
 		]
 
