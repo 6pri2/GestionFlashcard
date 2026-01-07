@@ -9,3 +9,13 @@ export const collectionSchema = z.object({
 export const getByIdSchema = z.object({
     id : z.uuid()
 })
+
+export const updateCollectionSchema = z.object({
+    title : z.string().min(1).max(100, "Collection title must be at most 100 characters").optional(),
+    description : z.string().min(1).max(512, "Collection description text must be at most 512 characters").optional(),
+    is_private : z.boolean().optional(),
+})
+
+export const getByTitle = z.object({
+    title : z.string().min(1).max(100, "Collection title must be at most 100 characters"),
+})
