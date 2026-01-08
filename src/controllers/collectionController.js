@@ -1,8 +1,8 @@
 import { request, response } from "express"
 import {db} from '../db/db.js'
-import { collections, flashcards } from "../db/schema.js"
+import { collections, flashcards, progression } from "../db/schema.js"
 import jwt from "jsonwebtoken"
-import { eq, and, like } from "drizzle-orm"
+import { eq, and, like, lte } from "drizzle-orm"
 import 'dotenv/config'
 
 /**
@@ -181,6 +181,63 @@ export const myCollection = async (req, res) => {
         })
     }
 }
+
+export const getFlashcardsToReviewByCollection = async (req, res) => {
+    try {
+        const { collection_id } = req.params;
+        const userId = req.user.userId;
+        const now = new Date();
+
+        // Récupérer la collection pour vérifier les droits d'accès
+        const [collection] = await db.select().from(collections).where(eq(collections.id, collection_id));
+        if (!collection) {
+            return res.status(404).json({ message: 'Collection non trouvée !' });
+        }
+        if (collection.is_private === true && collection.user_id !== userId && req.user.userAdmin === false) {
+            return res.status(403).json({ message: 'Vous n\'êtes pas autorisé à accéder à cette collection privée !' });
+        }
+
+        const flashcardsToReview = await db
+            .select({
+                id: flashcards.id,
+                front_text: flashcards.front_text,
+                back_text: flashcards.back_text,
+                url_front: flashcards.url_front,
+                url_back: flashcards.url_back,
+                collection_id: flashcards.collection_id,
+                progress_level: progression.progress_level,
+                last_review: progression.last_review,
+                next_review_date: progression.next_review_date,
+            })
+            .from(flashcards)
+            .innerJoin(collections, eq(flashcards.collection_id, collections.id))
+            .leftJoin(progression, and(eq(flashcards.id, progression.flashcard_id), eq(progression.user_id, userId)))
+            .where(
+                and(
+                    eq(collections.id, collection_id),
+                    eq(collections.user_id, userId), // Assurez-vous que l'utilisateur possède la collection
+                    // Les cartes sont à réviser si next_review_date est dans le passé ou nulle
+                    // On considère ici qu'une carte sans entrée de progression n'est pas "à réviser" pour cet endpoint,
+                    // car "à réviser" implique une progression existante.
+                    // Pour les nouvelles cartes, il faudra un endpoint spécifique ou une logique de création de progression initiale.
+                    progression.flashcard_id, // Exclut les flashcards sans entrée dans la table de progression
+                    lte(progression.next_review_date, now) // next_review_date est passée ou égale à maintenant
+                )
+            );
+
+        if (!flashcardsToReview || flashcardsToReview.length === 0) {
+            return res.status(404).json({ message: "Aucune flashcard à réviser trouvée pour cette collection ou les conditions de révision ne sont pas remplies." });
+        }
+
+        res.status(200).json(flashcardsToReview);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: "Échec de la récupération des flashcards à réviser par collection.",
+        });
+    }
+};
 
 export const deleteCollection = async (req, res) => {
     try{
