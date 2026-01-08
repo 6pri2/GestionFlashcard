@@ -1,7 +1,8 @@
 import { Router } from "express";
-import {createCollection, updateCollection, collectionById, collectionByTitle, myCollection, deleteCollection, collectionFlashcards} from '../controllers/collectionController.js'
+import {createCollection, updateCollection, collectionById, collectionByTitle, myCollection, deleteCollection, collectionFlashcards, getFlashcardsToReviewByCollection} from '../controllers/collectionController.js'
 import {validateBody, validateParams} from '../middleware/validation.js'
 import { collectionSchema, getByIdSchema, getByTitle, updateCollectionSchema } from "../controllers/models/collection.js";
+import { getFlashcardsToReviewByCollectionSchema } from "../controllers/models/flashcard.js";
 import { authenticateToken } from "../middleware/authenticateToken.js";
 
 const router = Router()
@@ -15,6 +16,8 @@ router.put('/updateCollection/:id', validateParams(getByIdSchema), validateBody(
 router.get("/collectionById/:id", validateParams(getByIdSchema), collectionById)
 
 router.get("/collectionFlashcrads/:id", validateParams(getByIdSchema), collectionFlashcards)
+
+router.get("/collectionFlashcardsToReview/:collection_id", validateParams(getFlashcardsToReviewByCollectionSchema), getFlashcardsToReviewByCollection)
 
 router.get("/collectionByTitle/:title",validateParams(getByTitle), collectionByTitle)
 

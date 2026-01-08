@@ -2,7 +2,7 @@ import express from 'express'
 import authRouter from './routers/authRouter.js'
 import collectionRouter from './routers/collectionRouter.js'
 import flashcardRouter from './routers/flashcardRouter.js'
-import adminRouter from './routers/adminRouter.js' // Importer le nouveau routeur admin
+import adminRouter from './routers/adminRouter.js' 
 import logger from "./middleware/logger.js"
 
 const app = express()
@@ -15,7 +15,7 @@ app.use(logger)
 app.use('/auth', authRouter)
 app.use('/collection', collectionRouter)
 app.use('/flashcard',flashcardRouter)
-app.use('/admin', adminRouter) // Utiliser le routeur admin
+app.use('/admin', adminRouter) 
 
 app.listen(PORT, () => {
 	console.log(`Server is running on http://localhost:${PORT}`)
