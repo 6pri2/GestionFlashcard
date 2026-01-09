@@ -3,11 +3,10 @@ import { authenticateToken } from "../middleware/authenticateToken.js";
 import { isAdmin } from "../middleware/isAdmin.js";
 import { listUsers, getUserById, deleteUser } from "../controllers/adminController.js";
 import { validateParams } from "../middleware/validation.js";
-import { getByIdSchema } from "../controllers/models/collection.js"; // Réutilisation du schéma getByIdSchema existant
+import { getByIdSchema } from "../controllers/models/collection.js"; 
 
 const router = Router();
 
-// Toutes les routes admin nécessitent une authentification et un rôle d'administrateur
 router.use(authenticateToken);
 router.use(isAdmin);
 

@@ -11,13 +11,13 @@ router.use(authenticateToken)
 
 router.post('/createCollection', validateBody(collectionSchema), createCollection)
 
-router.put('/updateCollection/:id', validateParams(getByIdSchema), validateBody(updateCollectionSchema), updateCollection)
+router.patch('/updateCollection/:id', validateParams(getByIdSchema), validateBody(updateCollectionSchema), updateCollection)
 
 router.get("/collectionById/:id", validateParams(getByIdSchema), collectionById)
 
 router.get("/collectionFlashcrads/:id", validateParams(getByIdSchema), collectionFlashcards)
 
-router.get("/collectionFlashcardsToReview/:collection_id", validateParams(getFlashcardsToReviewByCollectionSchema), getFlashcardsToReviewByCollection)
+router.get("/collection/:collection_id/review", validateParams(getFlashcardsToReviewByCollectionSchema), getFlashcardsToReviewByCollection)
 
 router.get("/collectionByTitle/:title",validateParams(getByTitle), collectionByTitle)
 

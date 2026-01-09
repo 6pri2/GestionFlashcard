@@ -8,7 +8,7 @@ const router = Router()
 
 router.use(authenticateToken)
 
-router.get('/allFlashcardsToReview', getAllFlashcardsToReview) 
+router.get('/reviewAll', getAllFlashcardsToReview) 
 
 router.get('/:id',validateParams(flashcardIdSchema),getFlashcardById)
 
