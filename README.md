@@ -413,89 +413,106 @@ Crée une nouvelle collection de flashcards.
 Oui — JWT valide.
 
 **Middleware**
-- `authenticateToken` : vérifie la présence et la validité du JWT
+- `authenticateToken` : vérifie la présence et la validité du JWT.
+- `validateBody` : valide le corps de la requête.
 
 **Validation (Zod)**  
-⚠️#TODO
-- `email` : string valide au format email  
-- `password` : string non vide de taille entre 6 et 255 caractères
+- `title` : string non vide de taille max 100.
+- `description` : string non vide de taille max 512.
+- `is_private` : boolean (optionnel).
 
 **Headers**
 - `Authorization: Bearer <token>`
 
 **Paramètres**
-⚠️#TODO
+Aucun.
 
 **Body attendu**
-⚠️#TODO
-- `email` (string)
-- `password` (string)
-
 ```json
 {
-  ⚠️#TODO
+  "title": "Ma nouvelle collection",
+  "description": "Description de ma collection.",
+  "is_private": false
 }
 ```
 
-**Réponse – Succès (200)**
+**Réponse – Succès (201)**
 ```json
 {
-  #TODO
+  "message": "Question created",
+  "data": {
+    "id": "c1f7a2d1-8e4d-4b8b-8e1e-7d7b0f1c9a0a",
+    "title": "Ma nouvelle collection",
+    "description": "Description de ma collection.",
+    "user_id": "fca23035-97e9-4007-a296-9e8532183906",
+    "is_private": false,
+    "created_at": "2024-01-09T10:00:00.000Z",
+    "updated_at": "2024-01-09T10:00:00.000Z"
+  }
 }
 ```
 
 **Erreurs possibles**
-- `401 Unauthorized` : token manquant, expiré ou invalide
-- `500 Internal Server Error` : erreur interne du serveur
-#TODO
+- `400 Bad Request` : données invalides (échec de la validation Zod).
+- `401 Unauthorized` : token manquant, expiré ou invalide.
+- `500 Internal Server Error` : erreur interne du serveur.
 
 ---
 
-### POST /collections/updateCollection
+### PATCH /collections/updateCollection/:id
 
 **Description**  
 Modifie une collection existante (titre, description, visibilité).
 
 **Authentification requise**  
-Oui — JWT valide.
+Oui — JWT valide, et propriétaire de la collection ou admin.
 
 **Middleware**
-- `authenticateToken` : vérifie la présence et la validité du JWT
+- `authenticateToken` : vérifie la présence et la validité du JWT.
+- `validateParams` : valide les paramètres de la route.
+- `validateBody` : valide le corps de la requête.
 
 **Validation (Zod)**  
-⚠️#TODO
-- `email` : string valide au format email  
-- `password` : string non vide de taille entre 6 et 255 caractères
+- `id`: UUID (paramètre de route).
+- `title` : string non vide de taille max 100 (optionnel).
+- `description` : string non vide de taille max 512 (optionnel).
+- `is_private` : boolean (optionnel).
 
 **Headers**
 - `Authorization: Bearer <token>`
 
 **Paramètres**
-⚠️#TODO
+- `id` (route param, UUID) : identifiant de la collection.
 
 **Body attendu**
-⚠️#TODO
-- `email` (string)
-- `password` (string)
-
 ```json
 {
-  ⚠️#TODO
+  "title": "Titre mis à jour"
 }
 ```
 
 **Réponse – Succès (200)**
 ```json
 {
-  #TODO
+  "message": "Collection mise à jour",
+  "data": {
+    "id": "c1f7a2d1-8e4d-4b8b-8e1e-7d7b0f1c9a0a",
+    "title": "Titre mis à jour",
+    "description": "Description de ma collection.",
+    "user_id": "fca23035-97e9-4007-a296-9e8532183906",
+    "is_private": false,
+    "created_at": "2024-01-09T10:00:00.000Z",
+    "updated_at": "2024-01-09T10:05:00.000Z"
+  }
 }
 ```
 
 **Erreurs possibles**
-- `401 Unauthorized` : token manquant, expiré ou invalide
-- `500 Internal Server Error` : erreur interne du serveur
-#TODO
-
+- `400 Bad Request` : données invalides (échec de la validation Zod).
+- `401 Unauthorized` : token manquant, expiré ou invalide.
+- `403 Forbidden` : l'utilisateur n'est pas le propriétaire ou un admin.
+- `404 Not Found` : collection non trouvée.
+- `500 Internal Server Error` : erreur interne du serveur.
 
 ---
 
@@ -505,136 +522,185 @@ Oui — JWT valide.
 Récupère une collection par son identifiant.
 
 **Authentification requise**  
-Oui — JWT valide.
+Oui — JWT valide. Accès autorisé si la collection est publique, ou si l'utilisateur est propriétaire ou admin.
 
 **Middleware**
-- `authenticateToken` : vérifie la présence et la validité du JWT
+- `authenticateToken` : vérifie la présence et la validité du JWT.
+- `validateParams` : valide les paramètres de la route.
 
 **Validation (Zod)**  
-⚠️#TODO
-- `email` : string valide au format email  
-- `password` : string non vide de taille entre 6 et 255 caractères
+- `id`: UUID (paramètre de route).
 
 **Headers**
 - `Authorization: Bearer <token>`
 
 **Paramètres**
-⚠️#TODO
+- `id` (route param, UUID) : identifiant de la collection.
 
 **Body attendu**
-⚠️#TODO
-- `email` (string)
-- `password` (string)
-
-```json
-{
-  ⚠️#TODO
-}
-```
+Aucun.
 
 **Réponse – Succès (200)**
 ```json
 {
-  #TODO
+  "id": "c1f7a2d1-8e4d-4b8b-8e1e-7d7b0f1c9a0a",
+  "title": "Ma collection",
+  "description": "Description de ma collection.",
+  "user_id": "fca23035-97e9-4007-a296-9e8532183906",
+  "is_private": false,
+  "created_at": "2024-01-09T10:00:00.000Z",
+  "updated_at": "2024-01-09T10:00:00.000Z"
 }
 ```
 
 **Erreurs possibles**
-- `401 Unauthorized` : token manquant, expiré ou invalide
-- `500 Internal Server Error` : erreur interne du serveur
-#TODO
+- `401 Unauthorized` : token manquant, expiré ou invalide.
+- `403 Forbidden` : la collection est privée et l'utilisateur n'est pas autorisé.
+- `404 Not Found` : collection non trouvée.
+- `500 Internal Server Error` : erreur interne du serveur.
+---
+
+### GET /collections/collectionFlashcards/:id
+
+**Description**  
+Récupère les flashcards d'une collection.
+
+**Authentification requise**  
+Oui — JWT valide. Accès autorisé si la collection est publique, ou si l'utilisateur est propriétaire ou admin.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT.
+- `validateParams` : valide les paramètres de la route.
+
+**Validation (Zod)**  
+- `id`: UUID (paramètre de route).
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+- `id` (route param, UUID) : identifiant de la collection.
+
+**Body attendu**
+Aucun.
+
+**Réponse – Succès (200)**
+```json
+[
+  {
+    "id": "f1c1b1a1-9f9d-4c8c-9c1c-8d8d1f1c9a0a",
+    "front_text": "Recto de la carte",
+    "back_text": "Verso de la carte",
+    "collection_id": "c1f7a2d1-8e4d-4b8b-8e1e-7d7b0f1c9a0a"
+  }
+]
+```
+
+**Erreurs possibles**
+- `401 Unauthorized` : token manquant, expiré ou invalide.
+- `403 Forbidden` : la collection est privée et l'utilisateur n'est pas autorisé.
+- `404 Not Found` : collection non trouvée ou pas de flashcards dans la collection.
+- `500 Internal Server Error` : erreur interne du serveur.
+
 ---
 
 ### GET /collections/collectionByTitle/:title
 
 **Description**  
-Recherche des collections publiques par titre.
+Recherche des collections publiques par titre. Les collections privées de l'utilisateur sont aussi retournées.
 
 **Authentification requise**  
 Oui — JWT valide.
 
 **Middleware**
-- `authenticateToken` : vérifie la présence et la validité du JWT
+- `authenticateToken` : vérifie la présence et la validité du JWT.
+- `validateParams` : valide les paramètres de la route.
 
 **Validation (Zod)**  
-⚠️#TODO
-- `email` : string valide au format email  
-- `password` : string non vide de taille entre 6 et 255 caractères
+- `title`: string non vide de taille max 100 (paramètre de route).
 
 **Headers**
 - `Authorization: Bearer <token>`
 
 **Paramètres**
-⚠️#TODO
+- `title` (route param, string) : expression à rechercher dans le titre.
 
 **Body attendu**
-⚠️#TODO
-- `email` (string)
-- `password` (string)
-
-```json
-{
-  ⚠️#TODO
-}
-```
+Aucun.
 
 **Réponse – Succès (200)**
 ```json
-{
-  #TODO
-}
+[
+  {
+    "id": "c1f7a2d1-8e4d-4b8b-8e1e-7d7b0f1c9a0a",
+    "title": "Ma collection",
+    "description": "Description de ma collection.",
+    "user_id": "fca23035-97e9-4007-a296-9e8532183906",
+    "is_private": false,
+    "created_at": "2024-01-09T10:00:00.000Z",
+    "updated_at": "2024-01-09T10:00:00.000Z"
+  }
+]
 ```
 
 **Erreurs possibles**
-- `401 Unauthorized` : token manquant, expiré ou invalide
-- `500 Internal Server Error` : erreur interne du serveur
-#TODO
+- `401 Unauthorized` : token manquant, expiré ou invalide.
+- `404 Not Found` : aucune collection trouvée.
+- `500 Internal Server Error` : erreur interne du serveur.
+
 ---
 
 ### GET /collections/myCollection
 
 **Description**  
-Liste toutes les collections appartenant à l’utilisateur connecté.
+Liste toutes les collections appartenant à l’utilisateur connecté, avec leurs flashcards.
 
 **Authentification requise**  
 Oui — JWT valide.
 
 **Middleware**
-- `authenticateToken` : vérifie la présence et la validité du JWT
+- `authenticateToken` : vérifie la présence et la validité du JWT.
 
 **Validation (Zod)**  
-⚠️#TODO
-- `email` : string valide au format email  
-- `password` : string non vide de taille entre 6 et 255 caractères
+Aucune.
 
 **Headers**
 - `Authorization: Bearer <token>`
 
 **Paramètres**
-⚠️#TODO
+Aucun.
 
 **Body attendu**
-⚠️#TODO
-- `email` (string)
-- `password` (string)
-
-```json
-{
-  ⚠️#TODO
-}
-```
+Aucun.
 
 **Réponse – Succès (200)**
 ```json
-{
-  #TODO
-}
+[
+  {
+    "id": "c1f7a2d1-8e4d-4b8b-8e1e-7d7b0f1c9a0a",
+    "title": "Ma collection",
+    "description": "Description de ma collection.",
+    "user_id": "fca23035-97e9-4007-a296-9e8532183906",
+    "is_private": false,
+    "created_at": "2024-01-09T10:00:00.000Z",
+    "updated_at": "2024-01-09T10:00:00.000Z",
+    "flashcards": [
+      {
+        "id": "f1c1b1a1-9f9d-4c8c-9c1c-8d8d1f1c9a0a",
+        "front_text": "Recto de la carte",
+        "back_text": "Verso de la carte",
+        "collection_id": "c1f7a2d1-8e4d-4b8b-8e1e-7d7b0f1c9a0a"
+      }
+    ]
+  }
+]
 ```
 
 **Erreurs possibles**
-- `401 Unauthorized` : token manquant, expiré ou invalide
-- `500 Internal Server Error` : erreur interne du serveur
-#TODO
+- `401 Unauthorized` : token manquant, expiré ou invalide.
+- `404 Not Found` : l'utilisateur n'a aucune collection.
+- `500 Internal Server Error` : erreur interne du serveur.
+
 ---
 
 ### DELETE /collections/deleteCollection/:id
@@ -643,93 +709,86 @@ Oui — JWT valide.
 Supprime une collection existante et ses flashcards associées.
 
 **Authentification requise**  
-Oui — JWT valide - propriétaire de la collection ou admin..
+Oui — JWT valide, propriétaire de la collection ou admin.
 
 **Middleware**
-- `authenticateToken` : vérifie la présence et la validité du JWT
+- `authenticateToken` : vérifie la présence et la validité du JWT.
+- `validateParams` : valide les paramètres de la route.
 
 **Validation (Zod)**  
-⚠️#TODO
-- `email` : string valide au format email  
-- `password` : string non vide de taille entre 6 et 255 caractères
+- `id` : UUID (paramètre de route).
 
 **Headers**
 - `Authorization: Bearer <token>`
 
 **Paramètres**
-⚠️#TODO
+- `id` (route param, UUID) : identifiant de la collection.
 
 **Body attendu**
-⚠️#TODO
-- `email` (string)
-- `password` (string)
-
-```json
-{
-  ⚠️#TODO
-}
-```
+Aucun.
 
 **Réponse – Succès (200)**
 ```json
 {
-  #TODO
+  "message": "Collection deleted !"
 }
 ```
 
 **Erreurs possibles**
-- `401 Unauthorized` : token manquant, expiré ou invalide
-- `500 Internal Server Error` : erreur interne du serveur
-#TODO
+- `401 Unauthorized` : token manquant, expiré ou invalide.
+- `403 Forbidden` : l'utilisateur n'est pas autorisé.
+- `404 Not Found` : collection non trouvée.
+- `500 Internal Server Error` : erreur interne du serveur.
+
 ---
 
-### GET /collections/:id/review
+### GET /collections/collection/:collection_id/review
 
 **Description**  
 Récupère les flashcards à réviser dans une collection pour l’utilisateur connecté, selon le système de répétition espacée.
 
 **Authentification requise**  
-Oui — JWT valide.
+Oui — JWT valide. L'utilisateur doit être le propriétaire de la collection.
 
 **Middleware**
-- `authenticateToken` : vérifie la présence et la validité du JWT
+- `authenticateToken` : vérifie la présence et la validité du JWT.
+- `validateParams` : valide les paramètres de la route.
 
 **Validation (Zod)**  
-⚠️#TODO
-- `email` : string valide au format email  
-- `password` : string non vide de taille entre 6 et 255 caractères
+- `collection_id` : UUID (paramètre de route).
 
 **Headers**
 - `Authorization: Bearer <token>`
 
 **Paramètres**
-⚠️#TODO
+- `collection_id` (route param, UUID) : identifiant de la collection.
 
 **Body attendu**
-⚠️#TODO
-- `email` (string)
-- `password` (string)
-
-```json
-{
-  ⚠️#TODO
-}
-```
+Aucun.
 
 **Réponse – Succès (200)**
 ```json
-{
-  #TODO
-}
+[
+  {
+    "id": "f1c1b1a1-9f9d-4c8c-9c1c-8d8d1f1c9a0a",
+    "front_text": "Recto de la carte à réviser",
+    "back_text": "Verso de la carte à réviser",
+    "collection_id": "c1f7a2d1-8e4d-4b8b-8e1e-7d7b0f1c9a0a",
+    "progress_level": 2,
+    "last_review": "2024-01-08T10:00:00.000Z",
+    "next_review_date": "2024-01-10T10:00:00.000Z"
+  }
+]
 ```
 
 **Erreurs possibles**
-- `401 Unauthorized` : token manquant, expiré ou invalide
-- `500 Internal Server Error` : erreur interne du serveur
-#TODO
+- `401 Unauthorized` : token manquant, expiré ou invalide.
+- `403 Forbidden` : l'utilisateur n'est pas autorisé.
+- `404 Not Found` : collection non trouvée ou aucune flashcard à réviser.
+- `500 Internal Server Error` : erreur interne du serveur.
 ---
 
-### GET /collections/review/all
+### GET /flashcards/reviewAll
 
 **Description**  
 Récupère toutes les flashcards à réviser pour l’utilisateur connecté, toutes collections confondues.
@@ -741,40 +800,37 @@ Oui — JWT valide.
 - `authenticateToken` : vérifie la présence et la validité du JWT
 
 **Validation (Zod)**  
-⚠️#TODO
-- `email` : string valide au format email  
-- `password` : string non vide de taille entre 6 et 255 caractères
+Aucune.
 
 **Headers**
 - `Authorization: Bearer <token>`
 
 **Paramètres**
-⚠️#TODO
+Aucun.
 
 **Body attendu**
-⚠️#TODO
-- `email` (string)
-- `password` (string)
-
-```json
-{
-  ⚠️#TODO
-}
-```
+Aucun.
 
 **Réponse – Succès (200)**
 ```json
-{
-  #TODO
-}
+[
+    {
+        "id": "f1c1b1a1-9f9d-4c8c-9c1c-8d8d1f1c9a0a",
+        "front_text": "Recto de la carte à réviser",
+        "back_text": "Verso de la carte à réviser",
+        "collection_id": "c1f7a2d1-8e4d-4b8b-8e1e-7d7b0f1c9a0a",
+        "progress_level": 2,
+        "last_review": "2024-01-08T10:00:00.000Z",
+        "next_review_date": "2024-01-10T10:00:00.000Z"
+    }
+]
 ```
 
 **Erreurs possibles**
-- `401 Unauthorized` : token manquant, expiré ou invalide
-- `500 Internal Server Error` : erreur interne du serveur
-#TODO
+- `401 Unauthorized` : token manquant, expiré ou invalide.
+- `404 Not Found` : Aucune flashcard à réviser.
+- `500 Internal Server Error` : erreur interne du serveur.
 ---
-
 ### 6.3 Flashcards
 
 Les endpoints Flashcards permettent de créer, consulter, modifier, supprimer et réviser les flashcards.  
