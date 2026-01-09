@@ -50,7 +50,7 @@ export async function seed() {
 				title : 'Les membres du Campus 3',
 				description : 'Connaissez-vous tous les membres du Campus 3 ? ',
 				user_id : result[0].id,
-				private : true,
+				is_private : true,
 			}
 		]
 
@@ -101,24 +101,37 @@ export async function seed() {
 		const resultFlashcards = await db.insert(flashcards).values(SeedFlashcards).returning()
 
 		const SeedProgression = [
-		{
-			flashcard_id: resultFlashcards[1].id,
-			user_id: result[0].id,
-			progress_level: 2,
-			last_review: new Date(),
-			next_review_date: new Date(),
-		},
-		{
-			flashcard_id: resultFlashcards[4].id, 
-			user_id: result[0].id,
-			progress_level: 3,
-			last_review: new Date(),
-			next_review_date: new Date(),
-		}
-		]
+      {
+        flashcard_id: resultFlashcards[1].id,
+        user_id: result[0].id,
+        progress_level: 2,
+        last_review: new Date(),
+        next_review_date: new Date(),
+      },
+      {
+        flashcard_id: resultFlashcards[4].id, 
+        user_id: result[0].id,
+        progress_level: 3,
+        last_review: new Date(),
+        next_review_date: new Date(),
+      },
+      {
+        flashcard_id: resultFlashcards[0].id,
+        user_id: result[0].id,
+        progress_level: 1, 
+        last_review: new Date('2023-01-01T10:00:00Z'), 
+        next_review_date: new Date('2023-01-02T10:00:00Z') 
+      },
+      {
+        flashcard_id: resultFlashcards[3].id, 
+        user_id: result[0].id,
+        progress_level: 2,
+        last_review: new Date('2023-01-01T12:00:00Z'),
+        next_review_date: new Date('2023-01-03T12:00:00Z')
+      }
+		];
 
-		await db.insert(progression).values(SeedProgression)
-
+		await db.insert(progression).values(SeedProgression).returning();   
 
 		console.log('Database seeded successfully!')
 		console.log('email : ', result[0].email)

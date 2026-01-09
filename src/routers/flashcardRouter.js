@@ -2,11 +2,13 @@ import { Router } from "express";
 import {validateBody, validateParams} from '../middleware/validation.js'
 import { authenticateToken } from "../middleware/authenticateToken.js";
 import { createFlashcardSchema, flashcardIdSchema, progressSchema, updateFlashcardSchema } from "../controllers/models/flashcard.js";
-import { getFlashcardById, createFlashcard, deleteFlashcard, updateFlashcard, reviseFlashcard } from "../controllers/flashcardController.js";
+import { getFlashcardById, createFlashcard, deleteFlashcard, updateFlashcard, reviseFlashcard, getAllFlashcardsToReview } from "../controllers/flashcardController.js"; // Ajout de getAllFlashcardsToReview
 
 const router = Router()
 
 router.use(authenticateToken)
+
+router.get('/reviewAll', getAllFlashcardsToReview) 
 
 router.get('/:id',validateParams(flashcardIdSchema),getFlashcardById)
 

@@ -1,7 +1,69 @@
 import { request, response } from "express"
-import { collections, flashcards, progression} from "../db/schema.js"
-import {db} from "../db/db.js"
-import {eq, and} from "drizzle-orm"
+import { collections, flashcards, progression } from "../db/schema.js"
+import { db } from "../db/db.js"
+// AJOUTEZ 'sql' dans les imports
+import { eq, and, isNotNull, sql } from "drizzle-orm" 
+
+export const getAllFlashcardsToReview = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        
+        // 1. Convertir la date en millisecondes (nombre) manuellement
+        // Comme ça, on envoie un nombre pur à la base de données
+        const nowMs = Date.now(); 
+
+        console.log("DEBUG - UserID:", userId);
+        console.log("DEBUG - Timestamp:", nowMs);
+
+        const flashcardsToReview = await db
+            .select({
+                id: flashcards.id,
+                front_text: flashcards.front_text,
+                back_text: flashcards.back_text,
+                url_front: flashcards.url_front,
+                url_back: flashcards.url_back,
+                collection_id: flashcards.collection_id,
+                progress_level: progression.progress_level,
+                last_review: progression.last_review,
+                next_review_date: progression.next_review_date,
+            })
+            .from(flashcards)
+            // Jointure Collections (INNER JOIN)
+            .innerJoin(collections, eq(flashcards.collection_id, collections.id))
+            // Jointure Progression (LEFT JOIN)
+            .leftJoin(progression, and(
+                eq(flashcards.id, progression.flashcard_id), 
+                eq(progression.user_id, userId)
+            ))
+            .where(
+                and(
+                    // Filtre propriétaire
+                    eq(collections.user_id, userId),
+                    
+                    // Filtre existence progression
+                    isNotNull(progression.flashcard_id),
+                    
+                    // CORRECTION ICI : Utilisation de sql``
+                    // On compare directement la colonne (qui est un entier en base) avec notre timestamp (entier)
+                    // Cela évite l'erreur "value.getTime is not a function"
+                    sql`${progression.next_review_date} <= ${nowMs}`
+                )
+            );
+
+        if (!flashcardsToReview || flashcardsToReview.length === 0) {
+            return res.status(200).json([]); // Retourner un tableau vide plutôt qu'une 404 est souvent mieux pour le front
+        }
+
+        res.status(200).json(flashcardsToReview);
+
+    } catch (error) {
+        console.error("Erreur CRITIQUE getAllFlashcardsToReview :", error);
+        res.status(500).json({
+            error: "Échec de la récupération des flashcards à réviser.",
+            details: error.message
+        });
+    }
+};
 
 /**
  * 
