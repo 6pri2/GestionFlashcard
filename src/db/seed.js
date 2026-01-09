@@ -2,16 +2,18 @@ import { db } from './db.js'
 import { collections, flashcards, users, progression } from './schema.js'
 import bcrypt from 'bcrypt'
 
-async function seed() {
+export async function seed() {
 	console.log('Starting database seed...')
 
 	try {
 		await db.delete(users)
 		await db.delete(collections)
 		await db.delete(flashcards)
+		await db.delete(progression) // au cas où
 
 		const hashedPassword1 = await bcrypt.hash('motdepasse', 12)
 		const hashedPassword2 = await bcrypt.hash('12345678', 12)
+    	const hashedPassword3 = await bcrypt.hash('password3', 12)
 
 		const seedUsers = [
 			{
@@ -26,6 +28,12 @@ async function seed() {
 				lastname : 'Duroy',
 				password : hashedPassword2,
 				admin : true
+			},
+			{ 
+				email: 'test3@test.com', 
+				firstname: 'Louis', 
+				lastname: 'Martin', 
+				password: hashedPassword3 
 			}
 		]
 
@@ -93,30 +101,37 @@ async function seed() {
 		const resultFlashcards = await db.insert(flashcards).values(SeedFlashcards).returning()
 
 		const SeedProgression = [
-			{
-				flashcard_id: resultFlashcards[0].id,
-				user_id: result[0].id,
-				progress_level: 1, // Bas niveau de progression pour qu'elle soit à réviser
-				last_review: new Date('2023-01-01T10:00:00Z'), // Date passée
-				next_review_date: new Date('2023-01-02T10:00:00Z') // Date proche
-			},
-			{
-				flashcard_id: resultFlashcards[1].id,
-				user_id: result[0].id,
-				progress_level: 0, // Encore plus bas
-				last_review: new Date('2023-01-01T11:00:00Z'),
-				next_review_date: new Date('2023-01-02T11:00:00Z')
-			},
-			{
-				flashcard_id: resultFlashcards[3].id, // Flashcard de la deuxième collection
-				user_id: result[0].id,
-				progress_level: 2,
-				last_review: new Date('2023-01-01T12:00:00Z'),
-				next_review_date: new Date('2023-01-03T12:00:00Z')
-			}
+      {
+        flashcard_id: resultFlashcards[1].id,
+        user_id: result[0].id,
+        progress_level: 2,
+        last_review: new Date(),
+        next_review_date: new Date(),
+      },
+      {
+        flashcard_id: resultFlashcards[4].id, 
+        user_id: result[0].id,
+        progress_level: 3,
+        last_review: new Date(),
+        next_review_date: new Date(),
+      },
+      {
+        flashcard_id: resultFlashcards[0].id,
+        user_id: result[0].id,
+        progress_level: 1, 
+        last_review: new Date('2023-01-01T10:00:00Z'), 
+        next_review_date: new Date('2023-01-02T10:00:00Z') 
+      },
+      {
+        flashcard_id: resultFlashcards[3].id, 
+        user_id: result[0].id,
+        progress_level: 2,
+        last_review: new Date('2023-01-01T12:00:00Z'),
+        next_review_date: new Date('2023-01-03T12:00:00Z')
+      }
 		];
 
-		await db.insert(progression).values(SeedProgression).returning();
+		await db.insert(progression).values(SeedProgression).returning();   
 
 		console.log('Database seeded successfully!')
 		console.log('email : ', result[0].email)
@@ -125,5 +140,3 @@ async function seed() {
 		console.error('Error seeding database:', error)
 	}
 }
-
-seed()

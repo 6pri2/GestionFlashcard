@@ -17,6 +17,12 @@ app.use('/collection', collectionRouter)
 app.use('/flashcard',flashcardRouter)
 app.use('/admin', adminRouter) 
 
-app.listen(PORT, () => {
-	console.log(`Server is running on http://localhost:${PORT}`)
-})
+if (process.env.NODE_ENV !== 'test') { //Ajout d'une condition pour ne pas lancer le serveur lorsque les tests automatique sont en cours d'execution
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`)
+  })
+}else {
+  console.log('Server not started: running in test mode');
+}
+
+export default app;

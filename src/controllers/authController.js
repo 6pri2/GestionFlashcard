@@ -33,7 +33,7 @@ export const register = async (req, res) => {
 
         res.status(201).json({
             message : "User created",
-            userDate : newUser,
+            userData : newUser,
             token,
         })
 
