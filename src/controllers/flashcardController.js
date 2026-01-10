@@ -234,14 +234,14 @@ export const getAllFlashcardsToReview = async (req, res) => {
             );
         
         if (!flashcardsToReview || flashcardsToReview.length === 0) {
-            return res.status(404).json({ message: "Aucune flashcard à réviser trouvée pour vous." });
+            return res.status(404).json({ message: "No flashcards to review found for you." });
         }
         res.status(200).json(flashcardsToReview);
 
     } catch (error) {
-        console.error("Erreur CRITIQUE getAllFlashcardsToReview :", error);
+        console.error(error);
         res.status(500).json({
-            error: "Échec de la récupération des flashcards à réviser.",
+            error: "Failed to retrieve flashcards for review.",
             details: error.message
         });
     }
