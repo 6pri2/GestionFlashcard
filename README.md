@@ -788,6 +788,262 @@ Aucun.
 - `500 Internal Server Error` : erreur interne du serveur.
 ---
 
+### 6.3 Flashcards
+
+Les endpoints Flashcards permettent de créer, consulter, modifier, supprimer et réviser les flashcards.  
+Toutes les routes nécessitent **un utilisateur authentifié** via JWT.
+
+---
+
+### GET /flashcards/:id
+
+**Description**  
+Récupère une flashcard par son identifiant.
+
+**Authentification requise**  
+Oui — JWT valide.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+- `validateParams` : valide les paramètres de la route.
+
+**Validation (Zod)**  
+- `id` : UUID valide (paramètre de route)
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+- `id` (route param, UUID) : identifiant de la flashcard
+
+**Body attendu**
+Aucun.
+
+**Réponse – Succès (200)**
+```json
+{
+  "id": "536cf903-7bd7-4279-9c2b-0c013b4d68f5",
+  "front_text": "Paris",
+  "back_text": "France",
+  "url_front": "https://www.okvoyage.com/wp-content/uploads/2023/10/Paris-en-photos-scaled.jpg",
+  "url_back": "https://c8.alamy.com/compfr/g2xyg1/carte-vectorielle-detaillee-de-la-france-et-capitale-paris-g2xyg1.jpg",
+  "collection_id": "90d1a062-7570-4f8a-b200-1f67357e3d3d",
+  "createdAt": "2026-01-10T10:27:47.000Z"
+}
+```
+
+**Erreurs possibles**
+- `400 Bad Request` : données invalides (échec de la validation Zod)
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `403 Forbidden` : utilisateur non autorisé
+- `404 Not Found` : flashcard non trouvée
+- `500 Internal Server Error` : erreur interne du serveur
+
+---
+
+### POST /flashcards/
+
+**Description**  
+Crée une nouvelle flashcard dans une collection.
+
+**Authentification requise**  
+Oui — JWT valide.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+- `validateBody` : valide le corps de la requête.
+
+**Validation (Zod)**  
+- `front_text` : string non vide de taille entre 1 et 512 caractères   
+- `back_text` : string non vide de taille entre 1 et 512 caractères   
+- `url_front` : url valide optionnel  
+- `url_back` : url valide optionnel  
+- `collection_id` :  UUID valide - identifiant de la flashcard
+
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+Aucun.
+
+**Body attendu**
+```json
+{
+  "front_text" : "Fabienne",
+  "back_text" : "Jort",
+  "url_front" : "https://www.google.com/url?sa=t&source=web&rct=j&url=https%3A%2F%2Ffr.wikipedia.org%2Fwiki%2FDrapeau_de_la_Bretagne&ved=0CBUQjRxqFwoTCLim_-a3xJEDFQAAAAAdAAAAABAH&opi=89978449",
+  "collection_id" : "1dcde502-99b3-4294-809d-5fa854218890"
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  "message": "Flashcard created",
+  "data": {
+    "id": "39bbcbb6-7ce3-4822-89d9-c5bced34e5a7",
+    "front_text": "Fabienne",
+    "back_text": "Jort",
+    "url_front": "https://www.google.com/url?sa=t&source=web&rct=j&url=https%3A%2F%2Ffr.wikipedia.org%2Fwiki%2FDrapeau_de_la_Bretagne&ved=0CBUQjRxqFwoTCLim_-a3xJEDFQAAAAAdAAAAABAH&opi=89978449",
+    "url_back": null,
+    "collection_id": "1dcde502-99b3-4294-809d-5fa854218890",
+    "createdAt": "2026-01-10T10:59:40.000Z"
+  }
+}
+```
+
+**Erreurs possibles**
+- `400 Bad Request` : données invalides (échec de la validation Zod)
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `403 Forbidden` : utilisateur non autorisé
+- `404 Not Found` : flashcard non trouvée
+- `500 Internal Server Error` : erreur interne du serveur
+
+---
+
+### DELETE /flashcards/:id
+
+**Description**  
+Supprime une flashcard existante.
+
+**Authentification requise**  
+Oui — JWT valide, propriétaire ou admin.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+- `validateParams` : valide les paramètres de la route.
+
+**Validation (Zod)**  
+- `id` : UUID valide (paramètre de route)
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+- `id` UUID valide : identifiant de la flashcard
+
+**Body attendu**
+Aucun.
+
+**Réponse – Succès (200)**
+```json
+{
+  "message": "Flashcard deleted !"
+}
+```
+
+**Erreurs possibles**
+- `400 Bad Request` : données invalides (échec de la validation Zod)
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `403 Forbidden` : utilisateur non autorisé
+- `404 Not Found` : flashcard non trouvée
+- `500 Internal Server Error` : erreur interne du serveur
+
+---
+
+### PATCH /flashcards/:id
+
+**Description**  
+Modifie une flashcard existante (front, back, URLs).
+
+**Authentification requise**  
+Oui — JWT valide, propriétaire ou admin.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+- `validateParams` : valide les paramètres de la route.
+- `validateBody` : valide le corps de la requête.
+
+**Validation (Zod)**  
+- `id` : UUID valide (paramètre de route)  
+- `front_text` : string non vide de taille entre 1 et 512 caractères optionnel   
+- `back_text` : string non vide de taille entre 1 et 512 caractères optionnel   
+- `url_front` : url valide optionnel  
+- `url_back` : url valide optionnel  
+- Il faut au moins un des quatre paramètres soit modifié
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+- `id` UUID valide : identifiant de la flashcard
+
+**Body attendu**
+```json
+{
+  "url_front" : "https://www.google.com/url?sa=t&source=web&rct=j&url=https%3A%2F%2Ffr.wikipedia.org%2Fwiki%2FDrapeau_de_la_Bretagne&ved=0CBUQjRxqFwoTCLim_-a3xJEDFQAAAAAdAAAAABAH&opi=89978449"
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  "message": "Flashcard updated !"
+}
+```
+
+**Erreurs possibles**
+- `400 Bad Request` : données invalides (échec de la validation Zod)
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `403 Forbidden` : utilisateur non autorisé
+- `404 Not Found` : flashcard non trouvée
+- `500 Internal Server Error` : erreur interne du serveur
+
+---
+
+### PATCH /flashcards/revise/:id
+
+**Description**  
+Enregistre une révision d’une flashcard et met à jour son niveau et la date de prochaine révision.
+
+**Authentification requise**  
+Oui — JWT valide.
+
+**Middleware**
+- `authenticateToken` : vérifie la présence et la validité du JWT
+- `validateParams` : valide les paramètres de la route.
+- `validateBody` : valide le corps de la requête.
+
+**Validation (Zod)**  
+- `progress_level` : nombre entier entre 1 et 5
+
+**Headers**
+- `Authorization: Bearer <token>`
+
+**Paramètres**
+- `id` UUID valide : identifiant de la flashcard
+
+**Body attendu**
+```json
+{
+  "progress_level" : 3
+}
+```
+
+**Réponse – Succès (200)**
+```json
+{
+  "message": "Progression updated",
+  "data": {
+    "flashcard_id": "54d1ff1a-decb-4ede-a862-e7f60355972e",
+    "user_id": "1d14e53a-354f-4077-b0c9-1af6c5ba24fa",
+    "progress_level": 3,
+    "last_review": "2026-01-10T11:10:30.000Z",
+    "next_review_date": "2026-01-14T11:10:30.000Z"
+  }
+}
+```
+
+**Erreurs possibles**
+- `400 Bad Request` : données invalides (échec de la validation Zod)
+- `401 Unauthorized` : token manquant, expiré ou invalide
+- `403 Forbidden` : utilisateur non autorisé
+- `404 Not Found` : flashcard non trouvée
+- `500 Internal Server Error` : erreur interne du serveur
+
+---
+
 ### GET /flashcards/reviewAll
 
 **Description**  
@@ -830,235 +1086,6 @@ Aucun.
 - `401 Unauthorized` : token manquant, expiré ou invalide.
 - `404 Not Found` : Aucune flashcard à réviser.
 - `500 Internal Server Error` : erreur interne du serveur.
----
-### 6.3 Flashcards
-
-Les endpoints Flashcards permettent de créer, consulter, modifier, supprimer et réviser les flashcards.  
-Toutes les routes nécessitent **un utilisateur authentifié** via JWT.
-
----
-
-### GET /flashcards/:id
-
-**Description**  
-Récupère une flashcard par son identifiant.
-
-**Authentification requise**  
-Oui — JWT valide.
-
-**Middleware**
-- `authenticateToken` : vérifie la présence et la validité du JWT
-
-**Validation (Zod)**  
-- `id` : UUID valide (paramètre de route)
-
-**Headers**
-- `Authorization: Bearer <token>`
-
-**Paramètres**
-- `id` (route param, UUID) : identifiant de la flashcard
-
-**Body attendu**
-Aucun.
-
-**Réponse – Succès (200)**
-```json
-{
-  #TODO
-}
-```
-
-**Erreurs possibles**
-- `401 Unauthorized` : token manquant, expiré ou invalide
-- `403 Forbidden` : utilisateur non autorisé
-- `404 Not Found` : flashcard non trouvée
-- `500 Internal Server Error` : erreur interne du serveur
-
----
-
-### POST /flashcards/
-
-**Description**  
-Crée une nouvelle flashcard dans une collection.
-
-**Authentification requise**  
-Oui — JWT valide.
-
-**Middleware**
-- `authenticateToken` : vérifie la présence et la validité du JWT
-
-**Validation (Zod)**  
-⚠️#TODO
-- `email` : string valide au format email  
-- `password` : string non vide de taille entre 6 et 255 caractères
-
-**Headers**
-- `Authorization: Bearer <token>`
-
-**Paramètres**
-Aucun.
-
-**Body attendu**
-⚠️#TODO
-- `email` (string)
-- `password` (string)
-
-```json
-{
-  ⚠️#TODO
-}
-```
-
-**Réponse – Succès (200)**
-```json
-{
-  #TODO
-}
-```
-
-**Erreurs possibles**
-- `401 Unauthorized` : token manquant, expiré ou invalide
-- `500 Internal Server Error` : erreur interne du serveur
-#TODO
-
----
-
-### DELETE /flashcards/:id
-
-**Description**  
-Supprime une flashcard existante.
-
-**Authentification requise**  
-Oui — JWT valide, propriétaire ou admin.
-
-**Middleware**
-- `authenticateToken` : vérifie la présence et la validité du JWT
-
-**Validation (Zod)**  
-- `id` : UUID valide (paramètre de route)
-
-**Headers**
-- `Authorization: Bearer <token>`
-
-**Paramètres**
-- `id` UUID valide : identifiant de la flashcard
-
-**Body attendu**
-⚠️#TODO
-- `email` (string)
-- `password` (string)
-
-```json
-{
-  ⚠️#TODO
-}
-```
-
-**Réponse – Succès (200)**
-```json
-{
-  #TODO
-}
-```
-
-**Erreurs possibles**
-- `401 Unauthorized` : token manquant, expiré ou invalide
-- `500 Internal Server Error` : erreur interne du serveur
-#TODO
-
----
-
-### PATCH /flashcards/:id
-
-**Description**  
-Modifie une flashcard existante (front, back, URLs).
-
-**Authentification requise**  
-Oui — JWT valide, propriétaire ou admin.
-
-**Middleware**
-- `authenticateToken` : vérifie la présence et la validité du JWT
-
-**Validation (Zod)**  
-⚠️#TODO
-- `email` : string valide au format email  
-- `password` : string non vide de taille entre 6 et 255 caractères
-
-**Headers**
-- `Authorization: Bearer <token>`
-
-**Paramètres**
-- `id` UUID valide : identifiant de la flashcard
-
-**Body attendu**
-⚠️#TODO
-- `email` (string)
-- `password` (string)
-
-```json
-{
-  ⚠️#TODO
-}
-```
-
-**Réponse – Succès (200)**
-```json
-{
-  #TODO
-}
-```
-
-**Erreurs possibles**
-- `401 Unauthorized` : token manquant, expiré ou invalide
-- `500 Internal Server Error` : erreur interne du serveur
-#TODO
-
----
-
-### PATCH /flashcards/revise/:id
-
-**Description**  
-Enregistre une révision d’une flashcard et met à jour son niveau et la date de prochaine révision.
-
-**Authentification requise**  
-Oui — JWT valide.
-
-**Middleware**
-- `authenticateToken` : vérifie la présence et la validité du JWT
-
-**Validation (Zod)**  
-⚠️#TODO
-- `email` : string valide au format email  
-- `password` : string non vide de taille entre 6 et 255 caractères
-
-**Headers**
-- `Authorization: Bearer <token>`
-
-**Paramètres**
-- `id` UUID valide : identifiant de la flashcard
-
-**Body attendu**
-⚠️#TODO
-- `email` (string)
-- `password` (string)
-
-```json
-{
-  ⚠️#TODO
-}
-```
-
-**Réponse – Succès (200)**
-```json
-{
-  #TODO
-}
-```
-
-**Erreurs possibles**
-- `401 Unauthorized` : token manquant, expiré ou invalide
-- `500 Internal Server Error` : erreur interne du serveur
-#TODO
 
 ---
 
