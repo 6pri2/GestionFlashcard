@@ -1106,41 +1106,55 @@ Oui — JWT valide et rôle `admin`.
 
 **Middleware**
 - `authenticateToken` : vérifie la présence et la validité du JWT
-- `authorizeAdmin` : vérifie que l’utilisateur est admin
+- `isAdmin` : vérifie que l’utilisateur est admin
 
 **Validation (Zod)**  
-⚠️#TODO
 Aucun.
 
 **Headers**
 - `Authorization: Bearer <token>`
 
 **Paramètres**
-⚠️#TODO
 Aucun.
 
 **Body attendu**
-⚠️#TODO
-- `email` (string)
-- `password` (string)
-
-```json
-{
-  ⚠️#TODO
-}
-```
+Aucun.
 
 **Réponse – Succès (200)**
 ```json
-{
-  #TODO
-}
+[
+  {
+    "id": "1d14e53a-354f-4077-b0c9-1af6c5ba24fa",
+    "email": "test@test.com",
+    "firstname": "alexandre",
+    "lastname": "LeRoy",
+    "admin": false,
+    "createdAt": "2026-01-10T10:27:47.000Z"
+  },
+  {
+    "id": "44582624-118a-4c3c-8f58-a170c2e00308",
+    "email": "test2@test.com",
+    "firstname": "Cyprien",
+    "lastname": "Duroy",
+    "admin": true,
+    "createdAt": "2026-01-10T10:27:47.000Z"
+  },
+  {
+    "id": "b7b64bef-6eff-4d6a-b32f-3e412d7cffbd",
+    "email": "test3@test.com",
+    "firstname": "Louis",
+    "lastname": "Martin",
+    "admin": false,
+    "createdAt": "2026-01-10T10:27:47.000Z"
+  }
+]
 ```
 
-**Erreurs possibles**
+**Erreurs possibles** 
 - `401 Unauthorized` : token manquant, expiré ou invalide
+- `403 Forbidden` : utilisateur non autorisé
+- `404 Not Found` : utilisateur non trouvée
 - `500 Internal Server Error` : erreur interne du serveur
-#TODO
 
 ---
 
@@ -1154,42 +1168,43 @@ Oui — JWT valide et rôle `admin`.
 
 **Middleware**
 - `authenticateToken` : vérifie la présence et la validité du JWT
-- `authorizeAdmin` : vérifie que l’utilisateur est admin
+- `isAdmin` : vérifie que l’utilisateur est admin
+- `validateParams` : valide les paramètres de la route.
 
 **Validation (Zod)**  
-⚠️#TODO
 - `id` : UUID valide (paramètre de route)
 
 **Headers**
 - `Authorization: Bearer <token>`
 
 **Paramètres**
-⚠️#TODO
 - `id` UUID valide : identifiant de la personne
 
 **Body attendu**
-⚠️#TODO
-- `email` (string)
-- `password` (string)
-
-```json
-{
-  ⚠️#TODO
-}
-```
+Aucun.
 
 **Réponse – Succès (200)**
 ```json
 {
-  #TODO
+  "id": "1d14e53a-354f-4077-b0c9-1af6c5ba24fa",
+  "email": "test@test.com",
+  "firstname": "alexandre",
+  "lastname": "LeRoy",
+  "admin": false,
+  "createdAt": "2026-01-10T10:27:47.000Z"
 }
 ```
 
 **Erreurs possibles**
+- `400 Bad Request` : données invalides (échec de la validation Zod)
 - `401 Unauthorized` : token manquant, expiré ou invalide
+- `403 Forbidden` : utilisateur non autorisé
+- `404 Not Found` : utilisateur non trouvée
 - `500 Internal Server Error` : erreur interne du serveur
-#TODO
----### DELETE /users/:id
+
+---
+
+### DELETE /users/:id
 
 **Description**  
 Supprime un utilisateur et gère les conséquences sur ses collections et flashcards.
@@ -1199,43 +1214,36 @@ Oui — JWT valide et rôle `admin`.
 
 **Middleware**
 - `authenticateToken` : vérifie la présence et la validité du JWT
-- `authorizeAdmin` : vérifie que l’utilisateur est admin
+- `isAdmin` : vérifie que l’utilisateur est admin
+- `validateParams` : valide les paramètres de la route.
 
 **Validation (Zod)**  
-⚠️#TODO
 - `id` : UUID valide (paramètre de route)
 
 **Headers**
 - `Authorization: Bearer <token>`
 
 **Paramètres**
-⚠️#TODO
 - `id` UUID valide : identifiant de la personne
 
 **Body attendu**
-⚠️#TODO
-- `email` (string)
-- `password` (string)
-
-```json
-{
-  ⚠️#TODO
-}
-```
+Aucun.
 
 **Réponse – Succès (200)**
 ```json
 {
-  #TODO
+  "message": "Utilisateur et toutes ses données associées supprimés avec succès.",
+  "userId": "1d14e53a-354f-4077-b0c9-1af6c5ba24fa"
 }
 ```
 
 **Erreurs possibles**
+- `400 Bad Request` : données invalides (échec de la validation Zod)
 - `401 Unauthorized` : token manquant, expiré ou invalide
+- `403 Forbidden` : utilisateur non autorisé
+- `404 Not Found` : utilisateur non trouvée
 - `500 Internal Server Error` : erreur interne du serveur
-#TODO
 
->⚠️Est ce qu'on fait un patch ? 
 ---
 
 ## 7. Modèle de données
