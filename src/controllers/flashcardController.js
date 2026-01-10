@@ -204,10 +204,6 @@ export const getAllFlashcardsToReview = async (req, res) => {
     try {
         const userId = req.user.userId;
         const nowMs = Date.now(); 
-
-        console.log("DEBUG - UserID:", userId);
-        console.log("DEBUG - Timestamp:", nowMs);
-
         const flashcardsToReview = await db
             .select({
                 id: flashcards.id,

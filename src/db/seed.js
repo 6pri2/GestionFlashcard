@@ -134,8 +134,6 @@ export async function seed() {
 		await db.insert(progression).values(SeedProgression).returning();   
 
 		console.log('Database seeded successfully!')
-		console.log('email : ', result[0].email)
-		console.log('password : motdepasse')
 	} catch (error) {
 		console.error('Error seeding database:', error)
 	}

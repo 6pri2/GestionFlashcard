@@ -5,7 +5,6 @@
  * @param {import("express").NextFunction} next
  */
 export const isAdmin = (req, res, next) => {
-    console.log(req.user.admin)
     if (req.user && req.user.userAdmin === true) {
         next();
     } else {

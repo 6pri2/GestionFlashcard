@@ -431,6 +431,7 @@ describe('Flashcard routes - complete coverage', () => {
                 .set('Authorization', `Bearer ${otherToken}`)
                 .send({ progress_level: 3 });
             expect(res.statusCode).toBe(403);
+            expect(res.body.message).toBe('This collection is private and it is not your flashcard !');
         });
 
         // ================= UPDATE =================
@@ -533,6 +534,43 @@ describe('Flashcard routes - complete coverage', () => {
 
             expect(res.statusCode).toBe(200);
             expect(res.body.message).toBe('Flashcard deleted !');
+        });
+    });
+
+    describe('GET /flashcard/reviewAll → get all flashcards to review', () => {
+        it('No token → 401', async () => {
+            const res = await request(app).get('/flashcard/reviewAll');
+            expect(res.statusCode).toBe(401);
+            expect(res.body.error).toBe('Access token required !');
+        });
+
+        it('Invalid token → 401', async () => {
+            const res = await request(app)
+                .get('/flashcard/reviewAll')
+                .set('Authorization', 'Bearer invalidtoken');
+            expect(res.statusCode).toBe(401);
+            expect(res.body.error).toBe('Invalid token !');
+        });
+
+        it('No flashcards to review → 200 empty array', async () => {
+            const res = await request(app)
+                .get('/flashcard/reviewAll')
+                .set('Authorization', `Bearer ${otherToken}`);
+            expect(res.statusCode).toBe(200);
+            expect(Array.isArray(res.body)).toBe(true);
+        });
+
+        it('Some flashcards to review → 200 with data', async () => {
+            const res = await request(app)
+                .get('/flashcard/reviewAll')
+                .set('Authorization', `Bearer ${userToken}`);
+            expect(res.statusCode).toBe(200);
+            if (res.body.length > 0) {
+                expect(res.body[0]).toHaveProperty('id');
+                expect(res.body[0]).toHaveProperty('front_text');
+                expect(res.body[0]).toHaveProperty('back_text');
+                expect(res.body[0]).toHaveProperty('progress_level');
+            }
         });
     });
 

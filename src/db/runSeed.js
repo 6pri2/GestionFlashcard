@@ -1,2 +1,8 @@
 import { seed } from './seed.js';
-seed();
+
+await seed();
+
+console.log('email : test@test.com');
+console.log('password : motdepasse');
+
+process.exit(0);

@@ -215,13 +215,9 @@ export const getFlashcardsToReviewByCollection = async (req, res) => {
             .where(
                 and(
                     eq(collections.id, collection_id),
-                    eq(collections.user_id, userId), // Assurez-vous que l'utilisateur possède la collection
-                    // Les cartes sont à réviser si next_review_date est dans le passé ou nulle
-                    // On considère ici qu'une carte sans entrée de progression n'est pas "à réviser" pour cet endpoint,
-                    // car "à réviser" implique une progression existante.
-                    // Pour les nouvelles cartes, il faudra un endpoint spécifique ou une logique de création de progression initiale.
-                    progression.flashcard_id, // Exclut les flashcards sans entrée dans la table de progression
-                    lte(progression.next_review_date, now) // next_review_date est passée ou égale à maintenant
+                    eq(collections.user_id, userId), 
+                    progression.flashcard_id, 
+                    lte(progression.next_review_date, now)
                 )
             );
 
