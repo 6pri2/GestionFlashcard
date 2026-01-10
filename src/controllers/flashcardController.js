@@ -1,7 +1,7 @@
 import { request, response } from "express"
 import { collections, flashcards, progression } from "../db/schema.js"
 import { db } from "../db/db.js"
-import { eq, and, isNotNull, sql } from "drizzle-orm" 
+import { eq, and, isNotNull, sql, lte, or } from "drizzle-orm" 
 
 
 /**
@@ -203,7 +203,7 @@ export const reviseFlashcard = async (req, res)=>{
 export const getAllFlashcardsToReview = async (req, res) => {
     try {
         const userId = req.user.userId;
-        const nowMs = Date.now(); 
+        const now = new Date(); 
         const flashcardsToReview = await db
             .select({
                 id: flashcards.id,
@@ -224,13 +224,16 @@ export const getAllFlashcardsToReview = async (req, res) => {
             ))
             .where(
                 and(
-                    eq(collections.user_id, userId),
+                    or(
+                        eq(collections.user_id, userId),
+                        eq(collections.is_private, false)
+                    ),
                     isNotNull(progression.flashcard_id),
-                    sql`${progression.next_review_date} <= ${nowMs}`
+                    lte(progression.next_review_date, now)
                 )
             );
         if (!flashcardsToReview || flashcardsToReview.length === 0) {
-            return res.status(200).json([]);
+            return res.status(404).json({ message: "Aucune flashcard à réviser trouvée pour vous." });
         }
         res.status(200).json(flashcardsToReview);
 

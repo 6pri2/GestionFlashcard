@@ -187,8 +187,6 @@ export const getFlashcardsToReviewByCollection = async (req, res) => {
         const { collection_id } = req.params;
         const userId = req.user.userId;
         const now = new Date();
-
-        // Récupérer la collection pour vérifier les droits d'accès
         const [collection] = await db.select().from(collections).where(eq(collections.id, collection_id));
         if (!collection) {
             return res.status(404).json({ message: 'Collection non trouvée !' });
@@ -217,7 +215,7 @@ export const getFlashcardsToReviewByCollection = async (req, res) => {
                     eq(collections.id, collection_id),
                     eq(collections.user_id, userId), 
                     progression.flashcard_id, 
-                    lte(progression.next_review_date, now)
+                    lte(progression.next_review_date, now) 
                 )
             );
 
