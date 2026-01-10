@@ -2,40 +2,46 @@
 
 ## Sommaire
 
-- [1. Présentation du projet](#1-présentation-du-projet)  
-  - [1.1 Contexte](#11-contexte)  
-  - [1.2 Objectifs](#12-objectifs)  
-  - [1.3 Fonctionnalités principales](#13-fonctionnalités-principales)  
-- [2. Technologies utilisées](#2-technologies-utilisées)  
-  - [2.1 Outils de développement](#21-outils-de-développement)  
-  - [2.2 Librairies & Frameworks](#22-librairies--frameworks)  
-- [3. Architecture du projet](#3-architecture-du-projet)  
-- [4. Installation du projet](#4-installation-du-projet)  
-  - [4.1 Prérequis](#41-prérequis)  
-  - [4.2 Installation des dépendances](#42-installation-des-dépendances)  
-- [5. Configuration](#5-configuration)  
-  - [5.1 Variables d’environnement](#51-variables-denvironnement)  
-  - [5.2 Exemple de fichier `.env`](#52-exemple-de-fichier-env)  
-- [6. Initialisation de la base de données](#6-initialisation-de-la-base-de-données)  
-  - [6.1 Génération des tables](#61-génération-des-tables)  
-  - [6.2 Données de test / seeding](#62-données-de-test--seeding)  
-- [7. Lancement du projet](#7-lancement-du-projet)  
-  - [7.1 Mode développement](#71-mode-développement)  
-  - [7.2 Vérification du bon fonctionnement](#72-vérification-du-bon-fonctionnement)  
-- [8. Tests](#8-tests)  
-  - [8.1 Tests manuels](#81-tests-manuels)  
-  - [8.2 Tests automatiques](#82-tests-automatiques)  
-- [9. Fonctionnalités détaillées](#9-fonctionnalités-détaillées)  
-  - [9.1 Authentification](#91-authentification)  
-  - [9.2 Gestion des collections](#92-gestion-des-collections)  
-  - [9.3 Gestion des flashcards](#93-gestion-des-flashcards)  
-  - [9.4 Répétition espacée](#94-répétition-espacée)  
-  - [9.5 Gestion des utilisateurs (admin, optionnel)](#95-gestion-des-utilisateurs-admin-optionnel)  
-- [10. Documentation de l’API](#10-documentation-de-lapi)  
-- [11. Modèle de données](#11-modèle-de-données)  
-  - [11.1 Schéma entité–relation](#111-schéma-entité-relation)  
-  - [11.2 Description des entités](#112-description-des-entités)  
-- [12. Auteurs](#12-auteurs)
+## Sommaire
+
+- [1. Présentation du projet](#1-présentation-du-projet)
+  - [1.1 Contexte](#11-contexte)
+  - [1.2 Objectifs](#12-objectifs)
+  - [1.3 Fonctionnalités principales](#13-fonctionnalités-principales)
+
+- [2. Technologies utilisées](#2-technologies-utilisées)
+  - [2.1 Outils de développement](#21-outils-de-développement)
+  - [2.2 Librairies et Frameworks](#22-librairies-et-frameworks)
+
+- [3. Architecture du projet](#3-architecture-du-projet)
+  - [3.1 Organisation générale](#31-organisation-générale)
+  - [3.2 Arborescence des dossiers](#32-arborescence-des-dossiers)
+
+- [4. Installation du projet](#4-installation-du-projet)
+  - [4.1 Prérequis](#41-prérequis)
+  - [4.2 Installation des dépendances](#42-installation-des-dépendances)
+  - [4.3 Configuration des variables d’environnement](#43-configuration-des-variables-denvironnement)
+  - [4.4 Initialisation de la base de données](#44-initialisation-de-la-base-de-données)
+  - [4.5 Lancement du serveur en mode développement](#45-lancement-du-serveur-en-mode-développement)
+
+- [5. Tests](#5-tests)
+  - [5.1 Tests manuels](#51-tests-manuels)
+  - [5.2 Tests automatisés](#52-tests-automatisés)
+
+- [6. Documentation de l’API](#6-documentation-de-lapi)
+  - [6.1 Authentification](#61-authentification)
+  - [6.2 Collections](#62-collections)
+  - [6.3 Flashcards](#63-flashcards)
+  - [6.4 Utilisateurs (Admin)](#64-utilisateurs-admin)
+
+- [7. Modèle de données](#7-modèle-de-données)
+  - [7.1 Schéma entité–relation](#71-schéma-entité–relation)
+  - [7.2 Présentation générale](#72-présentation-générale)
+  - [7.3 Description des tables](#73-description-des-tables)
+  - [7.4 Répétition espacée](#74-répétition-espacée)
+
+- [8. Auteurs](#8-auteurs)
+
 
 
 ## 1. Présentation du projet
@@ -232,6 +238,10 @@ L’objectif principal des tests est de valider le bon fonctionnement de l’API
 
 ## 6. Documentation de l’API
 
+Cette documentation de l’ensemble des endpoints de l’API est aussi disponible sous le fichier `endpoint.pdf`.
+
+---
+
 ### 6.1 Authentification
 
 Les endpoints d’authentification permettent la création de compte, la connexion et la récupération des informations de l’utilisateur connecté.  
@@ -244,10 +254,10 @@ L’authentification repose sur des JSON Web Tokens (JWT) transmis via l’en-t�
 **Description**  
 Crée un nouveau compte utilisateur.
 
-**Authentification requise**  
+**Authentification requise**   
 Aucune.
 
-**Middleware**
+**Middleware**  
 Aucun.
 
 **Validation (Zod)**  
@@ -257,10 +267,10 @@ Aucun.
 - `password` : string de taille entre 6 et 255 caractères
 
 
-**Headers**
+**Headers**  
 Aucun.
 
-**Paramètres**
+**Paramètres**  
 Aucun.
 
 **Body attendu**
@@ -304,17 +314,17 @@ Authentifie un utilisateur existant et retourne un token JWT permettant d’acc�
 **Authentification requise**  
 Aucune.
 
-**Middleware**
+**Middleware**  
 Aucun.
 
 **Validation (Zod)**  
 - `email` : string valide au format email  
 - `password` : string non vide de taille entre 6 et 255 caractères
 
-**Headers**
+**Headers**    
 Aucun.
 
-**Paramètres**
+**Paramètres**   
 Aucun.
 
 **Body attendu**
@@ -359,25 +369,16 @@ Oui — token JWT valide.
 - `authenticateToken` : vérifie la présence et la validité du JWT
 
 **Validation (Zod)**  
-- `email` : string valide au format email  
-- `password` : string non vide de taille entre 6 et 255 caractères
+Aucun. 
 
 **Headers**
 - `Authorization: Bearer <token>`
 
-**Paramètres**
+**Paramètres**  
 Aucun.
 
-**Body attendu**
-- `email` (string)
-- `password` (string)
-
-```json
-{
-  "email" : "test@test.com",
-  "password" : "motdepasse"
-}
-```
+**Body attendu**   
+Aucun.
 
 **Réponse – Succès (200)**
 ```json
@@ -424,7 +425,7 @@ Oui — JWT valide.
 **Headers**
 - `Authorization: Bearer <token>`
 
-**Paramètres**
+**Paramètres**  
 Aucun.
 
 **Body attendu**
@@ -537,7 +538,7 @@ Oui — JWT valide. Accès autorisé si la collection est publique, ou si l'util
 **Paramètres**
 - `id` (route param, UUID) : identifiant de la collection.
 
-**Body attendu**
+**Body attendu**  
 Aucun.
 
 **Réponse – Succès (200)**
@@ -581,7 +582,7 @@ Oui — JWT valide. Accès autorisé si la collection est publique, ou si l'util
 **Paramètres**
 - `id` (route param, UUID) : identifiant de la collection.
 
-**Body attendu**
+**Body attendu**  
 Aucun.
 
 **Réponse – Succès (200)**
@@ -625,7 +626,7 @@ Oui — JWT valide.
 **Paramètres**
 - `title` (route param, string) : expression à rechercher dans le titre.
 
-**Body attendu**
+**Body attendu**  
 Aucun.
 
 **Réponse – Succès (200)**
@@ -667,10 +668,10 @@ Aucune.
 **Headers**
 - `Authorization: Bearer <token>`
 
-**Paramètres**
+**Paramètres**  
 Aucun.
 
-**Body attendu**
+**Body attendu**  
 Aucun.
 
 **Réponse – Succès (200)**
@@ -724,7 +725,7 @@ Oui — JWT valide, propriétaire de la collection ou admin.
 **Paramètres**
 - `id` (route param, UUID) : identifiant de la collection.
 
-**Body attendu**
+**Body attendu**  
 Aucun.
 
 **Réponse – Succès (200)**
@@ -763,7 +764,7 @@ Oui — JWT valide. L'utilisateur doit être le propriétaire de la collection.
 **Paramètres**
 - `collection_id` (route param, UUID) : identifiant de la collection.
 
-**Body attendu**
+**Body attendu**  
 Aucun.
 
 **Réponse – Succès (200)**
@@ -816,7 +817,7 @@ Oui — JWT valide.
 **Paramètres**
 - `id` (route param, UUID) : identifiant de la flashcard
 
-**Body attendu**
+**Body attendu**  
 Aucun.
 
 **Réponse – Succès (200)**
@@ -864,7 +865,7 @@ Oui — JWT valide.
 **Headers**
 - `Authorization: Bearer <token>`
 
-**Paramètres**
+**Paramètres**  
 Aucun.
 
 **Body attendu**
@@ -923,7 +924,7 @@ Oui — JWT valide, propriétaire ou admin.
 **Paramètres**
 - `id` UUID valide : identifiant de la flashcard
 
-**Body attendu**
+**Body attendu**  
 Aucun.
 
 **Réponse – Succès (200)**
@@ -1061,10 +1062,10 @@ Aucune.
 **Headers**
 - `Authorization: Bearer <token>`
 
-**Paramètres**
+**Paramètres**  
 Aucun.
 
-**Body attendu**
+**Body attendu**  
 Aucun.
 
 **Réponse – Succès (200)**
@@ -1114,10 +1115,10 @@ Aucun.
 **Headers**
 - `Authorization: Bearer <token>`
 
-**Paramètres**
+**Paramètres**  
 Aucun.
 
-**Body attendu**
+**Body attendu**  
 Aucun.
 
 **Réponse – Succès (200)**
@@ -1180,7 +1181,7 @@ Oui — JWT valide et rôle `admin`.
 **Paramètres**
 - `id` UUID valide : identifiant de la personne
 
-**Body attendu**
+**Body attendu**  
 Aucun.
 
 **Réponse – Succès (200)**
@@ -1226,7 +1227,7 @@ Oui — JWT valide et rôle `admin`.
 **Paramètres**
 - `id` UUID valide : identifiant de la personne
 
-**Body attendu**
+**Body attendu**  
 Aucun.
 
 **Réponse – Succès (200)**
@@ -1254,7 +1255,8 @@ Le schéma entité–relation ci-dessous représente la structure de la base de 
 
 ![Schéma entité–relation](./mld.png)  
 
-Ce schéma est aussi disponible sous format pdf : `mld.pdf`
+Il est également disponible au format PDF : [Télécharger le schéma entité–relation (PDF)](./docs/mld.pdf)
+
 
 ---
 
