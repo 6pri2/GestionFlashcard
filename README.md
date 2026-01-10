@@ -2,8 +2,6 @@
 
 ## Sommaire
 
-## Sommaire
-
 - [1. Présentation du projet](#1-présentation-du-projet)
   - [1.1 Contexte](#11-contexte)
   - [1.2 Objectifs](#12-objectifs)
@@ -209,7 +207,7 @@ Ils permettent de :
 - contrôler le comportement du système de répétition espacée lors des révisions.
 
 ### 5.2 Tests automatisés
-Des tests automatisés ont été implémentés afin de vérifier de manière systématique et reproductible le comportement de l’API.
+186 tests automatisés ont été implémentés afin de vérifier de manière systématique et reproductible le comportement de l’API.
 
 Les technologies utilisées sont :
 - **Jest** : framework de tests pour l’exécution des tests unitaires et fonctionnels,
@@ -276,11 +274,7 @@ Aucun.
 **Paramètres**  
 Aucun.
 
-**Body attendu**
-- `email` (string)
-- `firstname` (string)
-- `lastname` (string)
-- `password` (string)
+**Body attendu**  
 ```json
 {
   "email" : "test3@test.com",
@@ -330,10 +324,7 @@ Aucun.
 **Paramètres**   
 Aucun.
 
-**Body attendu**
-- `email` (string)
-- `password` (string)
-
+**Body attendu**  
 ```json
 {
   "email" : "test@test.com",
@@ -1376,7 +1367,7 @@ Le système de répétition espacée repose sur cinq niveaux de progression :
 
 ## 8. Auteurs
 
-Ce projet a été réalisé dans le cadre du cours **R5.05 – Projet de groupe**, encadré par **M. Clément Catel** :   
+Ce projet a été réalisé dans le cadre du cours **R5.05 – Programmation avancée**, Projet de groupe encadré par **M. Clément Catel** :   
 - Github : `ClementCatel`  
 - Email : `clement.catel@unicaen.fr`
 - Sujet : `https://clementcatel.notion.site/R5-05-Projet-de-groupe-2ae3b8266dbb8014b0aac3869c316f7c` 
