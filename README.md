@@ -110,8 +110,11 @@ GestionFlashcard/
 ├── .gitignore # Fichiers à ignorer par Git
 ├── babel.config.js # Configuration Babel
 ├── drizzle.config.js # Configuration de Drizzle ORM
+├── endpoints.pdf #fichier pdf de la description de tous les endpoints
 ├── jest.config.cjs # Configuration Jest
 ├── jest.setup.js # Setup des tests Jest
+├── mld.pdf #fichier pdf du mld
+├── mld.png #fichier png du mld
 ├── package.json # Dépendances et scripts npm
 ├── package-lock.json # Version lock des packages
 └── README.md # Documentation du projet
@@ -238,7 +241,7 @@ L’objectif principal des tests est de valider le bon fonctionnement de l’API
 
 ## 6. Documentation de l’API
 
-Cette documentation de l’ensemble des endpoints de l’API est aussi disponible sous le fichier `endpoint.pdf`.
+Cette documentation de l’ensemble des endpoints de l’API est aussi disponible sous un fichier pdf : [Voir ici (PDF)](./endpoints.pdf)
 
 ---
 
@@ -1255,7 +1258,7 @@ Le schéma entité–relation ci-dessous représente la structure de la base de 
 
 ![Schéma entité–relation](./mld.png)  
 
-Il est également disponible au format PDF : [Télécharger le schéma entité–relation (PDF)](./docs/mld.pdf)
+Il est également disponible au format PDF : [Voir le schéma entité–relation (PDF)](./mld.pdf)
 
 
 ---
