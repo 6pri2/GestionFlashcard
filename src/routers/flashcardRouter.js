@@ -2,11 +2,13 @@ import { Router } from "express";
 import {validateBody, validateParams} from '../middleware/validation.js'
 import { authenticateToken } from "../middleware/authenticateToken.js";
 import { createFlashcardSchema, flashcardIdSchema, progressSchema, updateFlashcardSchema } from "../controllers/models/flashcard.js";
-import { getFlashcardById, createFlashcard, deleteFlashcard, updateFlashcard, reviseFlashcard, getAllFlashcardsToReview } from "../controllers/flashcardController.js"; // Ajout de getAllFlashcardsToReview
+import { getFlashcardById, createFlashcard, deleteFlashcard, updateFlashcard, reviseFlashcard, getAllFlashcardsToReview } from "../controllers/flashcardController.js";
 
 const router = Router()
 
 router.use(authenticateToken)
+
+router.get('/reviewAll', getAllFlashcardsToReview) 
 
 router.get('/:id',validateParams(flashcardIdSchema),getFlashcardById)
 
@@ -17,7 +19,5 @@ router.delete('/:id',validateParams(flashcardIdSchema),deleteFlashcard)
 router.patch('/:id', validateParams(flashcardIdSchema), validateBody(updateFlashcardSchema),updateFlashcard)
 
 router.patch('/revise/:id', validateParams(flashcardIdSchema),validateBody(progressSchema),reviseFlashcard)
-
-router.get('/reviewAll', getAllFlashcardsToReview) 
 
 export default router

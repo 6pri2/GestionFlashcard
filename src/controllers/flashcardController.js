@@ -232,6 +232,7 @@ export const getAllFlashcardsToReview = async (req, res) => {
                     lte(progression.next_review_date, now)
                 )
             );
+        
         if (!flashcardsToReview || flashcardsToReview.length === 0) {
             return res.status(404).json({ message: "Aucune flashcard à réviser trouvée pour vous." });
         }

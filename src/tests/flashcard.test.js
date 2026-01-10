@@ -556,8 +556,8 @@ describe('Flashcard routes - complete coverage', () => {
             const res = await request(app)
                 .get('/flashcard/reviewAll')
                 .set('Authorization', `Bearer ${otherToken}`);
-            expect(res.statusCode).toBe(200);
-            expect(Array.isArray(res.body)).toBe(true);
+            expect(res.statusCode).toBe(404);
+            expect(res.body.message).toBe('Aucune flashcard à réviser trouvée pour vous.');
         });
 
         it('Some flashcards to review → 200 with data', async () => {
