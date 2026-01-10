@@ -1210,61 +1210,129 @@ Oui — JWT valide et rôle `admin`.
 
 >⚠️Est ce qu'on fait un patch ? 
 ---
-## 9. Fonctionnalités détaillées
 
-### 9.1 Authentification
-- Inscription (email, prénom, nom, mot de passe)  
-- Connexion (email + mot de passe)  
-- Récupération des informations du compte (optionnel)
+## 7. Modèle de données
 
-### 9.2 Gestion des collections
-- Création, consultation, modification, suppression  
-- Visibilité : public / privé  
-- Recherche de collections publiques  
-- Accès limité aux propriétaires pour les collections privées
+### 7.1 Schéma entité–relation
 
-### 9.3 Gestion des flashcards
-- Création, consultation, modification, suppression  
-- Flashcards associées à des collections  
-- Images / URLs optionnelles pour le recto et verso  
-- Accès limité aux propriétaires ou collections publiques
+Le schéma entité–relation ci-dessous représente la structure de la base de données utilisée par l’API.
 
-### 9.4 Répétition espacée
-- 5 niveaux de révision avec délai progressif :
+![Schéma entité–relation](./mld.png)  
 
-| Niveau | Délai (jours) |
-|--------|---------------|
-| 1      | 1             |
-| 2      | 2             |
-| 3      | 4             |
-| 4      | 8             |
-| 5      | 16            |
-
-- Mise à jour automatique du niveau et de la date de prochaine révision après chaque révision
-
-### 9.5 Gestion des utilisateurs (admin, optionnel)
-- Listage, consultation et suppression des utilisateurs  
-- Accès restreint uniquement aux administrateurs
+Ce schéma est aussi disponible sous format pdf : `mld.pdf`
 
 ---
 
-## 10. Documentation de l’API
-- Liste complète des endpoints avec :  
-  - Méthode HTTP et chemin  
-  - Authentification requise (publique / user / admin)  
-  - Description des paramètres (body, query, route)
+### 7.2 Présentation générale
+
+La base de données est organisée autour de quatre tables principales :
+
+- `users` : gestion des utilisateurs et des rôles
+- `collections` : regroupement des flashcards par thématique
+- `flashcards` : cartes de révision
+- `progression` : suivi personnalisé de la répétition espacée par utilisateur
+
+Ce modèle permet :
+- de gérer des collections publiques et privées,
+- d’associer des flashcards à des collections,
+- d’implémenter une répétition espacée personnalisée pour chaque utilisateur, y compris pour les collections publiques.
 
 ---
 
-## 11. Modèle de données
+### 7.3 Description des tables
 
-### 11.1 Schéma entité–relation
-- Tables principales : `users`, `collections`, `flashcards`, `user_flashcards` (pour la révision personnelle)  
-- Clés primaires / étrangères et relations entre entités
+#### Table `users`
 
-### 11.2 Description des entités
-- Champs pertinents pour la répétition espacée  
-- Relations entre utilisateurs, collections et flashcards
+Stocke les informations relatives aux utilisateurs de l’application.
+
+**Champs**
+- `id` : identifiant unique de l’utilisateur (clé primaire)
+- `email` : adresse email unique
+- `firstname` : prénom
+- `lastname` : nom
+- `password` : mot de passe haché
+- `admin` : booléen indiquant si l’utilisateur est administrateur
+- `created_at` : date de création du compte
+
+**Relations**
+- Un utilisateur peut posséder plusieurs collections
+- Un utilisateur peut avoir plusieurs progressions de révision
+
+---
+
+#### Table `collections`
+
+Représente les collections de flashcards créées par les utilisateurs.
+
+**Champs**
+- `id` : identifiant unique de la collection (clé primaire)
+- `title` : titre de la collection
+- `description` : description de la collection
+- `user_id` : identifiant du propriétaire (clé étrangère vers `users`)
+- `is_private` : indique si la collection est privée ou publique
+- `created_at` : date de création
+
+**Relations**
+- Une collection appartient à un utilisateur
+- Une collection contient plusieurs flashcards
+
+---
+
+#### Table `flashcards`
+
+Contient les cartes de révision associées à une collection.
+
+**Champs**
+- `id` : identifiant unique de la flashcard (clé primaire)
+- `front_text` : contenu du recto
+- `back_text` : contenu du verso
+- `url_front` : URL optionnelle pour le recto
+- `url_back` : URL optionnelle pour le verso
+- `collection_id` : identifiant de la collection (clé étrangère)
+- `created_at` : date de création
+
+**Relations**
+- Une flashcard appartient à une collection
+- Une flashcard peut être révisée par plusieurs utilisateurs
+
+---
+
+#### Table `progression`
+
+Gère la répétition espacée de manière personnalisée pour chaque utilisateur et chaque flashcard.
+
+**Champs**
+- `flashcard_id` : identifiant de la flashcard (clé étrangère)
+- `user_id` : identifiant de l’utilisateur (clé étrangère)
+- `progress_level` : niveau de progression (1 à 5)
+- `last_review` : date de la dernière révision
+- `next_review_date` : date prévue pour la prochaine révision
+
+**Rôle**
+- Permet à plusieurs utilisateurs de réviser une même flashcard avec une progression différente
+- Rend possible la révision personnalisée des collections publiques
+- Supporte le système de répétition espacée
+
+---
+
+### 7.4 Répétition espacée
+
+Le système de répétition espacée repose sur cinq niveaux de progression :
+
+| Niveau | Délai avant la prochaine révision |
+|------|-----------------------------------|
+| 1 | 1 jour |
+| 2 | 2 jours |
+| 3 | 4 jours |
+| 4 | 8 jours |
+| 5 | 16 jours |
+
+À chaque révision :
+- le `progress_level` est mis à jour,
+- la date `last_review` est enregistrée,
+- la `next_review_date` est recalculée en fonction du niveau atteint.
+
+---
 
 ## 8. Auteurs
 
