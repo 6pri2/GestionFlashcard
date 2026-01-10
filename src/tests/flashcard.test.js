@@ -162,7 +162,7 @@ describe('Flashcard routes - complete coverage', () => {
 
             expect(res.statusCode).toBe(403);
             expect(res.body.message).toBe(
-            'It is not your flashcard and this collection is private !'
+            'It is not your collection !'
             );
         });
 

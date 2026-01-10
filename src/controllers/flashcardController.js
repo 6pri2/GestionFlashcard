@@ -1,69 +1,8 @@
 import { request, response } from "express"
 import { collections, flashcards, progression } from "../db/schema.js"
 import { db } from "../db/db.js"
-// AJOUTEZ 'sql' dans les imports
 import { eq, and, isNotNull, sql } from "drizzle-orm" 
 
-export const getAllFlashcardsToReview = async (req, res) => {
-    try {
-        const userId = req.user.userId;
-        
-        // 1. Convertir la date en millisecondes (nombre) manuellement
-        // Comme ça, on envoie un nombre pur à la base de données
-        const nowMs = Date.now(); 
-
-        console.log("DEBUG - UserID:", userId);
-        console.log("DEBUG - Timestamp:", nowMs);
-
-        const flashcardsToReview = await db
-            .select({
-                id: flashcards.id,
-                front_text: flashcards.front_text,
-                back_text: flashcards.back_text,
-                url_front: flashcards.url_front,
-                url_back: flashcards.url_back,
-                collection_id: flashcards.collection_id,
-                progress_level: progression.progress_level,
-                last_review: progression.last_review,
-                next_review_date: progression.next_review_date,
-            })
-            .from(flashcards)
-            // Jointure Collections (INNER JOIN)
-            .innerJoin(collections, eq(flashcards.collection_id, collections.id))
-            // Jointure Progression (LEFT JOIN)
-            .leftJoin(progression, and(
-                eq(flashcards.id, progression.flashcard_id), 
-                eq(progression.user_id, userId)
-            ))
-            .where(
-                and(
-                    // Filtre propriétaire
-                    eq(collections.user_id, userId),
-                    
-                    // Filtre existence progression
-                    isNotNull(progression.flashcard_id),
-                    
-                    // CORRECTION ICI : Utilisation de sql``
-                    // On compare directement la colonne (qui est un entier en base) avec notre timestamp (entier)
-                    // Cela évite l'erreur "value.getTime is not a function"
-                    sql`${progression.next_review_date} <= ${nowMs}`
-                )
-            );
-
-        if (!flashcardsToReview || flashcardsToReview.length === 0) {
-            return res.status(200).json([]); // Retourner un tableau vide plutôt qu'une 404 est souvent mieux pour le front
-        }
-
-        res.status(200).json(flashcardsToReview);
-
-    } catch (error) {
-        console.error("Erreur CRITIQUE getAllFlashcardsToReview :", error);
-        res.status(500).json({
-            error: "Échec de la récupération des flashcards à réviser.",
-            details: error.message
-        });
-    }
-};
 
 /**
  * 
@@ -78,7 +17,7 @@ export const getFlashcardById = async (req, res) => {
             return res.status(404).json({message : 'Flashcard not found !'})
         }
         const [collection] = await db.select().from(collections).where(eq(collections.id,flashcard.collection_id))
-        if(collection.private==true && collection.user_id!=req.user.userId && req.user.userAdmin==false){
+        if(collection.is_private==true && collection.user_id!=req.user.userId && req.user.userAdmin==false){
             return res.status(403).json({message : 'It is not your flashcard and this collection is private !'})
         }
         res.status(200).json(flashcard)
@@ -105,7 +44,7 @@ export const createFlashcard = async (req, res) => {
         }
 
         if(collection.user_id!=req.user.userId){
-            return res.status(403).json({message : 'It is not your flashcard and this collection is private !'})
+            return res.status(403).json({message : 'It is not your collection !'})
         }
 
     try{
@@ -199,7 +138,7 @@ export const reviseFlashcard = async (req, res)=>{
         }
 
         const [collection] = await db.select().from(collections).where(eq(collections.id,flashcard.collection_id))
-        if(collection.user_id!=req.user.userId && collection.private==true){
+        if(collection.user_id!=req.user.userId && collection.is_private==true){
             return res.status(403).json({message : 'This collection is private and it is not your flashcard !'})
         }
 
@@ -259,3 +198,51 @@ export const reviseFlashcard = async (req, res)=>{
         res.status(500).json({error : 'Failed to update revise flashcard'});
     }
 }
+
+
+export const getAllFlashcardsToReview = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const nowMs = Date.now(); 
+
+        console.log("DEBUG - UserID:", userId);
+        console.log("DEBUG - Timestamp:", nowMs);
+
+        const flashcardsToReview = await db
+            .select({
+                id: flashcards.id,
+                front_text: flashcards.front_text,
+                back_text: flashcards.back_text,
+                url_front: flashcards.url_front,
+                url_back: flashcards.url_back,
+                collection_id: flashcards.collection_id,
+                progress_level: progression.progress_level,
+                last_review: progression.last_review,
+                next_review_date: progression.next_review_date,
+            })
+            .from(flashcards)
+            .innerJoin(collections, eq(flashcards.collection_id, collections.id))
+            .leftJoin(progression, and(
+                eq(flashcards.id, progression.flashcard_id), 
+                eq(progression.user_id, userId)
+            ))
+            .where(
+                and(
+                    eq(collections.user_id, userId),
+                    isNotNull(progression.flashcard_id),
+                    sql`${progression.next_review_date} <= ${nowMs}`
+                )
+            );
+        if (!flashcardsToReview || flashcardsToReview.length === 0) {
+            return res.status(200).json([]);
+        }
+        res.status(200).json(flashcardsToReview);
+
+    } catch (error) {
+        console.error("Erreur CRITIQUE getAllFlashcardsToReview :", error);
+        res.status(500).json({
+            error: "Échec de la récupération des flashcards à réviser.",
+            details: error.message
+        });
+    }
+};

@@ -116,14 +116,14 @@ export async function seed() {
         next_review_date: new Date(),
       },
       {
-        flashcard_id: resultFlashcards[0].id,
+        flashcard_id: resultFlashcards[2].id,
         user_id: result[0].id,
         progress_level: 1, 
         last_review: new Date('2023-01-01T10:00:00Z'), 
         next_review_date: new Date('2023-01-02T10:00:00Z') 
       },
       {
-        flashcard_id: resultFlashcards[3].id, 
+        flashcard_id: resultFlashcards[5].id, 
         user_id: result[0].id,
         progress_level: 2,
         last_review: new Date('2023-01-01T12:00:00Z'),
